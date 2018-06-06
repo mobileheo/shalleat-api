@@ -7,11 +7,8 @@ const fs = require('fs'),
       https = require('https'),
       bodyParser = require('body-parser'),
       cookieParser = require('cookie-parser'),
-      {bcrypt_secrete} = require('./config/authConfig')
+      {bcrypt_secrete} = require('./config/authConfig');
       
-      
-
-
 app = express()
       .use(logger('dev'))
       .use(express.static(path.join(__dirname, 'public')))
