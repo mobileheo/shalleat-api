@@ -13,14 +13,13 @@ class User extends Model {
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['first_name', 'last_name'],
-
+      required: ['firstName', 'lastName', 'provider'],
       properties: {
         id: { type: 'integer' },
         username: { type: 'string', minLength: 4, maxLength: 15},
         email: { type: ['string', 'null'] },
-        first_name: { type: 'string', minLength: 1, maxLength: 50 },
-        last_name: { type: 'string', minLength: 1, maxLength: 50 },
+        firstName: { type: 'string', minLength: 1, maxLength: 50 },
+        lastName: { type: 'string', minLength: 1, maxLength: 50 },
         provider: { type: ['string', 'null'] },
         created_at: { type: 'string', format: 'date-time'},
         updated_at: { type: 'string', format: 'date-time'}
