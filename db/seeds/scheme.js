@@ -13,8 +13,8 @@ const createUser = knex => knex('users').insert({
 const createRest = knex => knex('restaurants').insert({
   name: faker.company.companyName(),
   description: faker.company.bsBuzz(),
-  phone_number: faker.phone.phoneNumber(),
-  geo_location: {
+  phoneNumber: faker.phone.phoneNumber(),
+  geoLocation: {
     lat: faker.address.latitude(),
     lon: faker.address.longitude(),
   },
