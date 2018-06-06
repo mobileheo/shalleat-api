@@ -21,11 +21,11 @@ module.exports = {
     bcrypt.hash(password, saltRounds, async function (err, password) {
       try {
         const user = await User.query().insert({
-          username, email, first_name, last_name, password, provider
+          username, email, firstName, lastName, password, provider
         })
         req.login(user.id, err => {
           console.log(`err => ${err}`)
-          res.json({username, email, firstanme, last_name, provider})
+          res.json({username, email, firstName, lastName, provider})
         });
       } catch (err) {
           console.log(err.message);
