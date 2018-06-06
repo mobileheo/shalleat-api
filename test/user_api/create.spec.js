@@ -4,13 +4,8 @@ const chai = require('chai');
 const should = chai.should();
 const chaiHttp = require('chai-http');
 const server = require('../../app');
-const User = require('../../models/user');
-
-// const config = require('../knexfile.js');
-
-// const knex = require("knex")(config[env]);
-
 const knex = require('../../db')
+const User = require('../../models/user');
 
 chai.use(chaiHttp);
 
@@ -19,8 +14,8 @@ beforeEach(() => knex.migrate.rollback()
     .then(() => knex.seed.run())
 );
 
-describe('POST /api/v1/user/new', function () {
-    it('should create and add an user', function (done) {
+describe('POST /api/v1/user/new', () => {
+    it('should create and add an user', done => {
         chai.request(server)
             .post('/api/v1/user/new/')
             .send({
@@ -31,7 +26,7 @@ describe('POST /api/v1/user/new', function () {
                 "password": "superSecret1@",
                 "pwMatch": "superSecret1@"
             })
-            .end(function (err, res) {
+            .end((err, res) => {
                 res.should.have.status(200);
                 res.should.be.json;
                 res.body.should.be.a('object');
@@ -49,7 +44,7 @@ describe('POST /api/v1/user/new', function () {
             });
     });
 
-    it('should throw an error with an invalid property name', function (done) {
+    it('should throw an error with an invalid property name', done => {
         chai.request(server)
             .post('/api/v1/user/new/')
             .send({
@@ -60,20 +55,34 @@ describe('POST /api/v1/user/new', function () {
                 "password": "superSecret1@",
                 "pwMatch": "superSecret1@"
             })
-            .end(function (err, res) {
+            .end((err, res) => {
                 res.should.have.status(200);
                 res.should.be.json;
                 res.body.should.be.a('object');
-                res.body.should.have.property('error');
-                res.body.error.should.equal('firstName: is a required property');
+                res.body.should.have.property('name');
+                res.body.name.should.equal("ValidationError");
+                res.body.should.have.property('type');
+                res.body.type.should.equal("ModelValidation");
+                res.body.should.have.property('data');
+                // res.body.data.should.equal({
+                //     "firstName": [{
+                //         "message": "is a required property",
+                //         "keyword": "required",
+                //         "params": {
+                //             "missingProperty": "firstName"
+                //         }
+                //     }]
+                // });
+                res.body.should.have.property("statusCode");
+                res.body.statusCode.should.equal(400);
                 done();
             });
     });
-    
-    it('should throw an error for mismatching passwords', function (done) {
+
+    it('should throw an error: mismatchPassword', done => {
         chai.request(server)
             .post('/api/v1/user/new/')
-            .send({	
+            .send({
                 "username": "Sunny",
                 "firstName": "Sunny",
                 "lastName": "Heo",
@@ -81,13 +90,15 @@ describe('POST /api/v1/user/new', function () {
                 "password": "superSecret1!",
                 "pwMatch": "superSecret1@"
             })
-            .end(function (err, res) {
+            .end((err, res) => {
                 res.should.have.status(200);
                 res.should.be.json;
                 res.body.should.be.a('object');
-                res.body.should.have.property('error');
-                res.body.error.should.equal('Passwords do not match, please try again.');
+                res.body.should.have.property('mismatchPassword');
+                res.body.mismatchPassword.should.equal('Passwords do not match, please try again.');
                 done();
             });
     });
+
+
 });

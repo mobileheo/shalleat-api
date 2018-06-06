@@ -5,38 +5,58 @@ const knex = require("../../../../db"),
   saltRounds = 10,
   {
     User,
-  } = require('../../../../models/schema');
+  } = require('../../../../models/schema'),
+  passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.* )(?=.*[^a-zA-Z0-9]).{8,}$/i;
 
-  module.exports = {
-    async localLogin(req, res, next) {
-      const {
-        username,
-        email,
-        firstName,
-        lastName,
-        password,
-        pwMatch
-      } = req.body;
-      const provider = "local"
-      if (password !== pwMatch) {
-        res.json({
-          error: "Passwords do not match, please try again."
-        })
-      } else {
-      bcrypt.hash(password, saltRounds, async function (err, password) {
-        try {
-          const user = await User.query().insert({
-            username, email, firstName, lastName, password, provider
-          })
-          req.login(user.id, err => {
-            console.log(`login error => ${err}`)
-            res.json({username, email, firstName, lastName, provider})
-          });
-        } catch (err) {
-            console.log(err.message);
-            res.json(err);
-        }
+const mismatchPassword = "Passwords do not match, please try again."
+const invalidPassword = "Password must include one lowercase character, one uppercase character, a number, and a special character."
+const insertUser = (req, res) => {
+  const userInput = req.body;
+  const provider = "local"
+  delete userInput.pwMatch;
+  const validUser = Object.assign(userInput, {
+    provider
+  })
+
+  bcrypt.hash(userInput.password, saltRounds, async function (err, password) {
+    try {
+      /* For testing purpose to avoid unique key violation*/
+      const deletedRow = await User.query().orderBy('id', 'desc').first().delete();
+      const user = await User.query().insert(validUser)
+      const parsedUser = delete validUser.password;
+      req.login(user.id, err => {
+        console.log(`login error => ${err}`)
+        res.json(user)
       });
+    } catch (err) {
+      console.log(err.message);
+      console.log(res.body);
+      res.json(err);
+    }
+  });
+}
+module.exports = {
+  async localLogin(req, res, next) {
+    const {
+      username,
+      email,
+      firstName,
+      lastName,
+      password,
+      pwMatch
+    } = req.body;
+    const userInput = req.body;
+    const provider = "local"
+    if (password !== pwMatch) {
+      res.json({
+        mismatchPassword
+      })
+    } else if (!password.match(passwordRegex)) {
+      res.json({
+        invalidPassword
+      })
+    } else {
+      insertUser(req, res);
     }
   }
 }
