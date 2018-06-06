@@ -1,22 +1,26 @@
 const fs = require('fs'),
-      path = require('path'),
-      knex = require('./db'),
-      environment = process.env.NODE_ENV || 'development',
-      logger = require('morgan'),
-      express = require('express'),
-      https = require('https'),
-      bodyParser = require('body-parser'),
-      cookieParser = require('cookie-parser'),
-      {bcrypt_secrete} = require('./config/authConfig');
-      
-      
-app = express()
-      .use(logger('dev'))
-      .use(express.static(path.join(__dirname, 'public')))
-      .use(bodyParser.json())
-      .use(cookieParser())
-      .set('json spaces', 2)
+  path = require('path'),
+  knex = require('./db'),
+  environment = process.env.NODE_ENV || 'development',
+  logger = require('morgan'),
+  express = require('express'),
+  https = require('https'),
+  bodyParser = require('body-parser'),
+  cookieParser = require('cookie-parser'),
+  {
+    bcrypt_secrete
+  } = require('./config/authConfig');
 
+
+app = express();
+
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev'));
+}
+
+app.use(bodyParser.json())
+  .use(cookieParser())
+  .set('json spaces', 2)
 
 const certOptions = {
   key: fs.readFileSync(path.resolve('./encryption/server.key')),
@@ -77,3 +81,5 @@ process.env.PORT ?
   https.createServer(certOptions, app).listen(PORT, () => {
     console.log(`🖥...Sunny's Server listening on ${PORT}...🖥`)
   })
+
+module.exports = app; // for testing
