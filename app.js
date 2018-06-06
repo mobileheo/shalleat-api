@@ -13,9 +13,7 @@ const fs = require('fs'),
 app = express()
       .use(logger('dev'))
       .use(express.static(path.join(__dirname, 'public')))
-      .use(bodyParser.urlencoded({
-        extended: true
-      }))
+      .use(bodyParser.json())
       .use(cookieParser())
       .set('json spaces', 2)
 
@@ -56,6 +54,8 @@ app.use((req, res, next) => {
 });
 
 
+const usersAPI = require('./routes/api/v1/usersAPI')
+
 app.get('/', (req, res, next) => {
   console.log('this is user ====> ', req.user)
 
@@ -64,6 +64,8 @@ app.get('/', (req, res, next) => {
   // res.end(n + ' views');
   next();
 })
+
+app.use('/api/v1/user', usersAPI)
 
 
 PORT = process.env.PORT || 8080;
