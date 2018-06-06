@@ -100,5 +100,26 @@ describe('POST /api/v1/user/new', () => {
             });
     });
 
+    it('should throw an error: invalidPassword', done => {
+        chai.request(server)
+            .post('/api/v1/user/new/')
+            .send({
+                "username": "Sunny",
+                "firstName": "Sunny",
+                "lastName": "Heo",
+                "email": "sunny@vancouver.com",
+                "password": "supersecret",
+                "pwMatch": "supersecret"
+            })
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.should.be.json;
+                res.body.should.be.a('object');
+                res.body.should.have.property('invalidPassword');
+                res.body.invalidPassword.should.equal('Password must include one lowercase character, one uppercase character, a number, and a special character.');
+                done();
+            });
+    });
+
 
 });
