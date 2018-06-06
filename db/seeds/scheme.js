@@ -5,16 +5,16 @@ const createUser = knex => knex('users').insert({
   username: faker.internet.userName(),
   email: faker.internet.email(),
   password: faker.internet.password(),
-  first_name: faker.name.firstName(),
-  last_name: faker.name.lastName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   provider: ["google", "facebook", "instagram"][~~(Math.random() * 3)],
 })
 
 const createRest = knex => knex('restaurants').insert({
   name: faker.company.companyName(),
   description: faker.company.bsBuzz(),
-  phone_number: faker.phone.phoneNumber(),
-  geo_location: {
+  phoneNumber: faker.phone.phoneNumber(),
+  geoLocation: {
     lat: faker.address.latitude(),
     lon: faker.address.longitude(),
   },

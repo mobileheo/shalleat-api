@@ -3,8 +3,8 @@ exports.up = knex =>
     table.increments('id').primary();
     table.string('name');
     table.text('description');
-    table.string('phone_number');
-    table.json('geo_location');
+    table.string('phoneNumber');
+    table.json('geoLocation');
     table.json('address');
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
