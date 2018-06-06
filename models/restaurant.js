@@ -18,8 +18,8 @@ class Restaurant extends Model {
       properties: {
         id: { type: 'integer' },
         description: { type: 'string' },
-        phone_number: { type: 'string', pattern: '^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$' },
-        geo_location: { 
+        phoneNumber: { type: 'string', pattern: '^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$' },
+        geoLocation: { 
           type: ['object', null], 
           properties: {
             lat: { type: ['string', 'integer', 'float']},

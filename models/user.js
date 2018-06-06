@@ -13,7 +13,7 @@ class User extends Model {
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['firstName', 'lastName'],
+      required: ['firstName', 'lastName', 'provider'],
 
       properties: {
         id: { type: 'integer' },
