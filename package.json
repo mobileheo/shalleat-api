@@ -12,7 +12,7 @@
     "db:seed": "knex seed:run",
     "db:make:seed": "knex seed:make",
     "db:make:migration": "knex migrate:make",
-    "testdb:create" : "createdb --echo shall_eat_api_test",
+    "testdb:create": "createdb --echo shall_eat_api_test",
     "test": "mocha --timeout 10000"
   },
   "keywords": [
@@ -30,7 +30,6 @@
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
-    "express-validator": "^5.2.0",
     "knex": "^0.14.6",
     "moment": "^2.22.1",
     "morgan": "^1.9.0",
@@ -47,8 +46,7 @@
     "chai-http": "^4.0.0",
     "faker": "^4.1.0",
     "mocha": "^5.2.0",
-    "nodemon": "^1.17.4",
-    "request": "^2.87.0"
+    "nodemon": "^1.17.4"
   },
   "author": "Sunny (Yongseok)",
   "license": "ISC"
