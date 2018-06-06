@@ -7,8 +7,8 @@ const fs = require('fs'),
       https = require('https'),
       bodyParser = require('body-parser'),
       cookieParser = require('cookie-parser'),
-      {bcrypt_secrete} = require('./config/authConfig'),
-      expressValidator = require('express-validator');
+      {bcrypt_secrete} = require('./config/authConfig');
+      
       
 app = express()
       .use(logger('dev'))
