@@ -3,8 +3,8 @@ exports.up = knex =>
     table.increments('id').primary();
     table.string('username').unique();
     table.string('email');
-    table.string('first_name');
-    table.string('last_name');
+    table.string('firstName');
+    table.string('lastName');
     table.string('password');
     table.string('provider');
     table.timestamp('created_at').defaultTo(knex.fn.now());
