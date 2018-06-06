@@ -33,7 +33,7 @@ describe('POST /api/v1/user/new', function () {
             })
             .end(function (err, res) {
                 res.should.have.status(200);
-                res.should.be.json; // jshint ignore:line
+                res.should.be.json;
                 res.body.should.be.a('object');
                 res.body.should.have.property('username');
                 res.body.username.should.equal('Sunny');
@@ -45,6 +45,48 @@ describe('POST /api/v1/user/new', function () {
                 res.body.email.should.equal('sunny@vancouver.com');
                 res.body.should.have.property('provider');
                 res.body.provider.should.equal('local');
+                done();
+            });
+    });
+
+    it('should throw an error with an invalid property name', function (done) {
+        chai.request(server)
+            .post('/api/v1/user/new/')
+            .send({
+                "username": "Sunny",
+                "first_name": "Sunny",
+                "lastName": "Heo",
+                "email": "sunny@vancouver.com",
+                "password": "superSecret1@",
+                "pwMatch": "superSecret1@"
+            })
+            .end(function (err, res) {
+                res.should.have.status(200);
+                res.should.be.json;
+                res.body.should.be.a('object');
+                res.body.should.have.property('error');
+                res.body.error.should.equal('firstName: is a required property');
+                done();
+            });
+    });
+    
+    it('should throw an error for mismatching passwords', function (done) {
+        chai.request(server)
+            .post('/api/v1/user/new/')
+            .send({	
+                "username": "Sunny",
+                "firstName": "Sunny",
+                "lastName": "Heo",
+                "email": "sunny@vancouver.com",
+                "password": "superSecret1!",
+                "pwMatch": "superSecret1@"
+            })
+            .end(function (err, res) {
+                res.should.have.status(200);
+                res.should.be.json;
+                res.body.should.be.a('object');
+                res.body.should.have.property('error');
+                res.body.error.should.equal('Passwords do not match, please try again.');
                 done();
             });
     });
