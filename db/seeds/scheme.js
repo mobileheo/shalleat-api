@@ -1,5 +1,5 @@
 const faker = require('faker');
-const province = ["British Columbia", "Ontario", "Newfoundland", "Nova Scotia", "Prince Edward Island", "New Brunswick", "Quebec", "Manitoba", "Saskatchewan", "Alberta", "Northwest Territories", "Nunavut", "Yukon Territory"];
+const provinces = ["British Columbia", "Ontario", "Newfoundland", "Nova Scotia", "Prince Edward Island", "New Brunswick", "Quebec", "Manitoba", "Saskatchewan", "Alberta", "Northwest Territories", "Nunavut", "Yukon Territory"];
 
 const createUser = knex => knex('users').insert({
   username: faker.internet.userName(),
@@ -21,7 +21,7 @@ const createRest = knex => knex('restaurants').insert({
   address: {
     street: faker.address.streetAddress(),
     city: faker.address.city(),
-    province: province[~~(Math.random() * province.length)],
+    province: provinces[~~(Math.random() * provinces.length)],
     zipCode: faker.address.zipCode()
   }
 })
@@ -43,5 +43,13 @@ exports.seed = knex =>
     .then(() => {
       const restaurants = [...Array(100)].map(restaurant => createRest(knex));
       return Promise.all(restaurants);
+    })
+  ).then(() => knex('restaurants_customers').del()
+    .then(() => {
+      const customers = [...Array(50)].map(customer => {
+        let [firstRand, secondRand] = [~~(Math.random() * 100), ~~(Math.random() * 100)];
+        return createRestCust(knex, firstRand, secondRand);
+      })
+      return Promise.all(customers);
     })
   )
