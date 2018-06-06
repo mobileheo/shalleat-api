@@ -12,6 +12,7 @@
     "db:seed": "knex seed:run",
     "db:make:seed": "knex seed:make",
     "db:make:migration": "knex migrate:make",
+    "testdb:create" : "createdb --echo shall_eat_api_test",
     "test": "mocha --timeout 10000"
   },
   "keywords": [

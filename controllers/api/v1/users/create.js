@@ -8,12 +8,12 @@ const knex = require("../../../../db"),
   } = require('../../../../models/schema');
 
 module.exports = {
-   async localLogin(req, res, next) {
+  async localLogin(req, res, next) {
     const {
       username,
       email,
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       password,
       pwMatch
     } = req.body;
@@ -28,9 +28,8 @@ module.exports = {
           res.json({username, email, firstanme, last_name, provider})
         });
       } catch (err) {
-        console.log(err instanceof objection.ValidationError); // --> true
-        console.log(err.data); // --> {lastName: [{message: 'required property missing', ...}]}
-        res.json(err.data);
+          console.log(err.message);
+          res.json({error: err.message});
       }
     });
   }
