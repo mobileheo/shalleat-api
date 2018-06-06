@@ -13,7 +13,7 @@
     "db:make:seed": "knex seed:make",
     "db:make:migration": "knex migrate:make",
     "testdb:create": "createdb --echo shall_eat_api_test",
-    "test": "nyc mocha --timeout 10000 test/**/*.spec.js"
+    "test": "nyc mocha --timeout 10000 test/**/*.spec.js --exit"
   },
   "keywords": [
     "Express.js",
