@@ -29,12 +29,12 @@ const knex = require("../../../../db"),
             username, email, firstName, lastName, password, provider
           })
           req.login(user.id, err => {
-            console.log(`err => ${err}`)
+            console.log(`login error => ${err}`)
             res.json({username, email, firstName, lastName, provider})
           });
         } catch (err) {
             console.log(err.message);
-            res.json({error: err.message});
+            res.json(err);
         }
       });
     }
