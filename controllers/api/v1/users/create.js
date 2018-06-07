@@ -3,60 +3,59 @@ const knex = require("../../../../db"),
   session = require("express-session"),
   bcrypt = require("bcrypt"),
   saltRounds = 10,
-  {
-    User,
-  } = require('../../../../models/schema'),
-  passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.* )(?=.*[^a-zA-Z0-9]).{8,}$/i;
+  { User } = require("../../../../models/schema");
 
-const mismatchPassword = "Passwords do not match, please try again."
-const invalidPassword = "Password must include one lowercase character, one uppercase character, a number, and a special character."
+const isValidPassword = password =>
+  password.match(
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.* )(?=.*[^a-zA-Z0-9]).{8,}$/i
+  );
+const mismatchPassword = "Passwords do not match, please try again.";
+const invalidPassword =
+  "Password must include one lowercase character, one uppercase character, a number, and a special character.";
 const insertUser = (req, res) => {
   const userInput = req.body;
-  const provider = "local"
+  const provider = "local";
   delete userInput.pwMatch;
-  const validUser = Object.assign(userInput, {
+  let validUser = Object.assign(userInput, {
     provider
-  })
+  });
 
-  bcrypt.hash(userInput.password, saltRounds, async function (err, password) {
+  bcrypt.hash(userInput.password, saltRounds, async function(err, password) {
     try {
       /* For testing purpose to avoid unique key violation*/
-      const deletedRow = await User.query().orderBy('id', 'desc').first().delete();
-      const user = await User.query().insert(validUser)
-      const parsedUser = delete validUser.password;
+      validUser.password = password;
+      // const deletedRow = await User.query()
+      //   .orderBy("id", "desc")
+      //   .first()
+      //   .delete();
+      const user = await User.query().insert(validUser);
+      delete validUser.password;
+      delete validUser.id;
       req.login(user.id, err => {
-        console.log(`login error => ${err}`)
-        res.json(user)
+        console.log(`login error => ${err}`);
+        res.json(validUser);
       });
-    } catch (err) {
-      console.log(err.message);
-      console.log(res.body);
-      res.json(err);
+    } catch (error) {
+      // console.log(error);
+      res.json(error);
     }
   });
-}
+};
 module.exports = {
   async localLogin(req, res, next) {
-    const {
-      username,
-      email,
-      firstName,
-      lastName,
-      password,
-      pwMatch
-    } = req.body;
+    const { password, pwMatch } = req.body;
     const userInput = req.body;
-    const provider = "local"
+    const provider = "local";
     if (password !== pwMatch) {
       res.json({
         mismatchPassword
-      })
-    } else if (!password.match(passwordRegex)) {
+      });
+    } else if (!isValidPassword(password)) {
       res.json({
         invalidPassword
-      })
+      });
     } else {
       insertUser(req, res);
     }
   }
-}
+};
