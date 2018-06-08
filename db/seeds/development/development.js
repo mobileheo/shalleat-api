@@ -1,3 +1,4 @@
+const { User, Restaurant } = require("../../../models/schema");
 const faker = require("faker");
 const provinces = [
   "British Columbia",
@@ -14,10 +15,18 @@ const provinces = [
   "Nunavut",
   "Yukon Territory"
 ];
+const adminUser = {
+  firstName: "Sunny",
+  lastName: "Heo",
+  email: "sunny@admin.com",
+  password: "superSecret1@",
+  provider: "local"
+};
+const defualtUser = async () => await User.query().insert(adminUser);
 
+defualtUser();
 const createUser = knex =>
   knex("users").insert({
-    username: faker.internet.userName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
     firstName: faker.name.firstName(),
