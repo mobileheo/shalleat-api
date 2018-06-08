@@ -24,10 +24,13 @@ const insertUser = (req, res) => {
     try {
       /* For testing purpose to avoid unique key violation*/
       validUser.password = password;
-      // const deletedRow = await User.query()
+      // const lastUser = await User.query()
       //   .orderBy("id", "desc")
-      //   .first()
-      //   .delete();
+      //   .first();
+
+      // const deletedRow = await User.query().deleteById(lastUser.id);
+
+      // console.log(deletedRow);
       const user = await User.query().insert(validUser);
       delete validUser.password;
       delete validUser.id;
@@ -41,8 +44,9 @@ const insertUser = (req, res) => {
     }
   });
 };
+
 module.exports = {
-  async localLogin(req, res, next) {
+  async createUser(req, res, next) {
     const { password, pwMatch } = req.body;
     const userInput = req.body;
     const provider = "local";

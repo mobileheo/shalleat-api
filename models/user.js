@@ -14,7 +14,6 @@ class User extends Model {
   }
 
   $beforeInsert() {
-    console.log(isEmail(this.email));
     if (!isEmail(this.email)) {
       throw new ValidationError({
         message: "The email you entered is invalid, please try again.",
@@ -32,7 +31,6 @@ class User extends Model {
       required: ["firstName", "lastName", "provider"],
       properties: {
         id: { type: "integer" },
-        username: { type: "string", minLength: 4, maxLength: 15 },
         email: { type: ["string", "null"] },
         firstName: { type: "string", minLength: 1, maxLength: 50 },
         lastName: { type: "string", minLength: 1, maxLength: 50 },
