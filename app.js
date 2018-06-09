@@ -7,7 +7,7 @@ const fs = require("fs"),
   https = require("https"),
   bodyParser = require("body-parser"),
   cookieParser = require("cookie-parser"),
-  { bcrypt_secrete } = require("./config/authConfig");
+  { bcryptSecret } = require("./config/authConfig");
 
 app = express();
 
@@ -43,7 +43,7 @@ app
       // },
       store: store,
       saveUninitialized: true,
-      secret: bcrypt_secrete,
+      secret: bcryptSecret,
       resave: true
     })
   )

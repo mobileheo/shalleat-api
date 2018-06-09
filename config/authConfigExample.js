@@ -1,35 +1,36 @@
 module.exports = {
-  bcrypt_secrete: '[your bcrypt_secrete]',
+  bcryptSecret: "[your bcrypt_secrete]",
+  jwtSecret: "[your bcrypt_secrete]",
   googleConfig: {
-    clientID: '[your clientID]',
-    clientSecret: '[your clientSecret]',
-    callbackURL: '[your callbackURL]',
+    clientID: "[your clientID]",
+    clientSecret: "[your clientSecret]",
+    callbackURL: "[your callbackURL]"
   },
   googleScope: {
-    scope: '[your scope]'
+    scope: "[your scope]"
   },
 
   facebookConfig: {
-    clientID: '[your clientID]',
-    clientSecret: '[your clientSecret]',
+    clientID: "[your clientID]",
+    clientSecret: "[your clientSecret]",
     callbackURL: "[your callbackURL]",
-    profileFields: '[your profileFields]',
+    profileFields: "[your profileFields]"
   },
   facebookScope: {
-    scope: '[your scope]'
+    scope: "[your scope]"
   },
 
   instagramConfig: {
-    clientID: '[your clientID]',
-    clientSecret: '[your clientSecret]',
-    callbackURL: "[your callbackURL]",
+    clientID: "[your clientID]",
+    clientSecret: "[your clientSecret]",
+    callbackURL: "[your callbackURL]"
   },
   instagramScope: {
-    scope: '[your scope]'
+    scope: "[your scope]"
   },
 
   redicrectObj: {
-    successRedirect: '/',
-    failureRedirect: '/users/login'
+    successRedirect: "/",
+    failureRedirect: "/users/login"
   }
-}
+};

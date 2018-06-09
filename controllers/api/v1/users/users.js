@@ -1,6 +1,18 @@
+const JWT = require("jsonwebtoken");
+const { jwtSecret } = require("../../../../config/authConfig");
 const { User } = require("../../../../models/schema");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const authToken = id =>
+  JWT.sign(
+    {
+      iss: "ShallEat",
+      sub: id,
+      iat: new Date().getTime(),
+      exp: new Date().setDate(new Date().getDate() + 1)
+    },
+    jwtSecret
+  );
 
 module.exports = {
   signUp: async (req, res, next) => {
@@ -11,15 +23,14 @@ module.exports = {
         validUser.password = password;
         const user = await User.query().insert(validUser);
         delete validUser.password;
-        req.login(user.id, () => res.json(validUser));
+        const token = authToken(user.id);
+        req.login(user.id, () => res.json({ token }));
       } catch (error) {
         res.status(403).json(error);
       }
     });
   },
-  signIn: async (req, res, next) => {
-    console.log("UsersController.signIn() called!");
-  },
+  signIn: async (req, res, next) => {},
   secret: async (req, res, next) => {
     console.log("UsersController.secret() called!");
   }
