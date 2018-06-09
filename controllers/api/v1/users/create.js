@@ -10,22 +10,23 @@ const VALID_PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.* )(?=.*[^a-zA-
 
 const isValidPassword = password => VALID_PASSWORD_REGEX.test(password);
 
-const insertUser = (req, res) =>
-  bcrypt.hash(userInput.password, saltRounds, async function(err, password) {
+const insertUser = (req, res) => {
+  const { pwMatch, ...validUser } = req.body;
+  bcrypt.hash(validUser.password, saltRounds, async (err, password) => {
     try {
-      const { pwMatch, ...validUser } = req.body;
-
       /* Update password with encryption before creating new user*/
       validUser.password = password;
 
       const user = await User.query().insert(validUser);
-      req.login(user.id, () => {
-        res.json(validUser);
-      });
+
+      delete validUser.password;
+
+      req.login(user.id, () => res.json(validUser));
     } catch (error) {
       res.json(error);
     }
   });
+};
 
 module.exports = {
   createUser(req, res) {
