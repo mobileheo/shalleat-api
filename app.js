@@ -67,8 +67,10 @@ app.use((req, res, next) => {
 });
 
 const usersAPI = require("./routes/api/v1/usersAPI");
+const users = require("./routes/api/v1/users");
 
-app.use("/api/v1/user", usersAPI);
+// app.use("/api/v1/user", usersAPI);
+app.use("/api/v1/users", users);
 
 PORT = process.env.PORT || 8080;
 
