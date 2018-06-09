@@ -27,6 +27,4 @@ passport.use(
   })
 );
 
-module.exports = (req, res, next) => {
-  res.json({ message: "Authenticated" });
-};
+module.exports = (req, res, next) => res.json({ message: "Authorized" });
