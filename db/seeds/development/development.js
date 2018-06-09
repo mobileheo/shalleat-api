@@ -40,8 +40,8 @@ const createRest = knex =>
     description: faker.company.bsBuzz(),
     phoneNumber: faker.phone.phoneNumber(),
     geoLocation: {
-      lat: faker.address.latitude(),
-      lon: faker.address.longitude()
+      latitude: faker.address.latitude(),
+      longitude: faker.address.longitude()
     },
     address: {
       street: faker.address.streetAddress(),

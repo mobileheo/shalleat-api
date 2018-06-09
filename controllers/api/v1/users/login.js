@@ -11,12 +11,11 @@ passport.use(
       })
       .select("id", "password")
       .then(([user]) => {
-        // console.log(user);
         user
           ? bcrypt.compare(password, user.password, (err, res) => {
               if (res === true)
                 return done(null, {
-                  user_id: user.id
+                  userId: user.id
                 });
               else return done(null, false);
             })
