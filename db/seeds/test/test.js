@@ -36,7 +36,7 @@ const email = () => {
   return validEmail;
 };
 
-const createUser = iteration =>
+const createUsers = iteration =>
   [...Array(iteration)].map(user => {
     return {
       email: email(),
@@ -46,69 +46,58 @@ const createUser = iteration =>
       provider: ["google", "facebook", "instagram"][~~(Math.random() * 3)]
     };
   });
-
-const createRest = knex =>
-  knex("restaurants").insert({
-    name: faker.company.companyName(),
-    description: faker.company.bsBuzz(),
-    phoneNumber: faker.phone.phoneNumber(),
-    geoLocation: {
-      latitude: faker.address.latitude(),
-      longitude: faker.address.longitude()
-    },
-    address: {
-      street: faker.address.streetAddress(),
-      city: faker.address.city(),
-      province: provinces[~~(Math.random() * provinces.length)],
-      zipCode: faker.address.zipCode()
-    }
-  });
-
-const createRestCust = (knex, customerId, restaurantId) => {
-  return knex("restaurants_customers").insert({
-    customerId,
-    restaurantId
+const createRestaurants = iteration => {
+  [...Array(iteration)].map(restaurants => {
+    return {
+      name: faker.company.companyName(),
+      description: faker.company.bsBuzz(),
+      phoneNumber: faker.phone.phoneNumber(),
+      geoLocation: {
+        latitude: faker.address.latitude(),
+        longitude: faker.address.longitude()
+      },
+      address: {
+        street: faker.address.streetAddress(),
+        city: faker.address.city(),
+        province: provinces[~~(Math.random() * provinces.length)],
+        zipCode: faker.address.zipCode()
+      }
+    };
   });
 };
 
-// exports.seed = knex =>
-//   knex("users")
-//     .del()
-//     .then(() => {
-//       const users = [...Array(10)].map(user => createUser(knex));
-//       return Promise.all(users);
-//     })
-//     .then(() =>
-//       knex("restaurants")
-//         .del()
-//         .then(() => {
-//           const restaurants = [...Array(10)].map(restaurant =>
-//             createRest(knex)
-//           );
-//           return Promise.all(restaurants);
-//         })
-//     )
-//     .then(() => {
-//       bcrypt.hash(adminUser.password, saltRounds, async function(
-//         err,
-//         password
-//       ) {
-//         try {
-//           adminUser.password = password;
-//           const user = await User.query().insert(adminUser);
-//           // return user;
-//         } catch (error) {
-//           console.log(error);
-//         }
-//       });
-//     });
+// const createRestCust = (knex, customerId, restaurantId) => {
+//   return knex("restaurants_customers").insert({
+//     customerId,
+//     restaurantId
+//   });
+// };
+const createCustomers = async (userId, restaurantId) => {
+  try {
+    const compositeKey = { userId, restaurantId };
+    const customer = await restaurants_customers.query().insert(compositeKey);
+  } catch (error) {
+    console.log(error);
+  }
+};
 exports.seed = () => {
   // const user = adminUser;
-  createUser(5).forEach(user => {
-    bcrypt.hash(user.password, saltRounds, async function(err, password) {
+  createUsers(5).forEach(user => {
+    bcrypt.hash(user.password, saltRounds, async (err, password) => {
       try {
         user.password = password;
         const newUser = await User.query().insert(user);
+
+        // const randNum = num => ~~(Math.random() * num + 1);
+        // const randN = randNum(5);
+        // console.log(randN);
+        createRestaurants(5).forEach(async r => {
+          try {
+            const newRestaurants = await Restaurant.query().insert(r);
+            console.log(`newUser: ${newUser}`);
+            createCustomers(newUser.id, newRestaurants.id);
+          } catch (error) {}
+        });
       } catch (error) {
         console.log(error);
       }
