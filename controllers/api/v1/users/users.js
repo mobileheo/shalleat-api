@@ -4,19 +4,16 @@ const saltRounds = 10;
 
 module.exports = {
   signUp: async (req, res, next) => {
-    const { pwMatch, ...validUser } = req.body;
+    let validUser = req.value.body;
     bcrypt.hash(validUser.password, saltRounds, async (err, password) => {
       try {
         /* Update password with encryption before creating new user*/
         validUser.password = password;
-
         const user = await User.query().insert(validUser);
-
         delete validUser.password;
-
         req.login(user.id, () => res.json(validUser));
       } catch (error) {
-        res.json(error);
+        res.status(403).json(error);
       }
     });
   },
