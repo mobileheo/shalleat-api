@@ -36,8 +36,6 @@ describe("POST /api/v1/user/new", () => {
         res.body.lastName.should.equal("Heo");
         res.body.should.have.property("email");
         res.body.email.should.equal("sunny@vancouver.com");
-        res.body.should.have.property("provider");
-        res.body.provider.should.equal("local");
         done();
       });
   });
@@ -69,6 +67,42 @@ describe("POST /api/v1/user/new", () => {
               keyword: "required",
               params: {
                 missingProperty: "firstName"
+              }
+            }
+          ]
+        });
+        res.body.should.have.property("statusCode");
+        res.body.statusCode.should.equal(400);
+        done();
+      });
+  });
+
+  it("should throw an error with missing required property", done => {
+    chai
+      .request(server)
+      .post("/api/v1/user/new/")
+      .send({
+        firstName: "Sunny",
+        lastName: "Heo",
+        password: "superSecret1@",
+        pwMatch: "superSecret1@"
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.should.be.json;
+        res.body.should.be.a("object");
+        res.body.should.have.property("name");
+        res.body.name.should.equal("ValidationError");
+        res.body.should.have.property("type");
+        res.body.type.should.equal("ModelValidation");
+        res.body.should.have.property("data");
+        res.body.data.should.deep.equal({
+          email: [
+            {
+              message: "is a required property",
+              keyword: "required",
+              params: {
+                missingProperty: "email"
               }
             }
           ]
@@ -143,7 +177,20 @@ describe("POST /api/v1/user/new", () => {
         res.body.should.have.property("name");
         res.body.name.should.equal("ValidationError");
         res.body.should.have.property("type");
-        res.body.type.should.equal("invalidEmail");
+        res.body.type.should.equal("ModelValidation");
+        res.body.should.have.property("data");
+        res.body.data.should.deep.equal({
+          email: [
+            {
+              message:
+                'should match pattern "^([a-z0-9-_.]+@[a-z0-9-.]+.[a-z]{2,4})$"',
+              keyword: "pattern",
+              params: {
+                pattern: "^([a-z0-9-_.]+@[a-z0-9-.]+.[a-z]{2,4})$"
+              }
+            }
+          ]
+        });
         res.body.should.have.property("statusCode");
         res.body.statusCode.should.equal(400);
         done();

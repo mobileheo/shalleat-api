@@ -44,7 +44,7 @@ describe("POST /api/v1/user/login", () => {
         password: "superSecret1@"
       })
       .end((err, res) => {
-        console.log(res);
+        // console.log(res);
         res.should.have.status(200);
         res.should.be.json;
         res.body.should.be.a("object");
