@@ -5,7 +5,7 @@ exports.up = knex =>
     table.string("firstName");
     table.string("lastName");
     table.string("password");
-    table.string("provider");
+    table.string("provider").defaultTo("local");
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
   });

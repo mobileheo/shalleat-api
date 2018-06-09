@@ -1,43 +1,44 @@
-const {
-  Model
-} = require('objection')
-const knex = require('../db');
+const { Model } = require("objection");
+const knex = require("../db");
 
 Model.knex(knex);
 
 class Restaurant extends Model {
   static get tableName() {
-    return 'restaurants';
+    return "restaurants";
   }
 
   static get jsonSchema() {
     return {
-      type: 'object',
-      required: ['name'],
+      type: "object",
+      required: ["name"],
 
       properties: {
-        id: { type: 'integer' },
-        description: { type: 'string' },
-        phoneNumber: { type: 'string', pattern: '^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$' },
-        geoLocation: { 
-          type: ['object', null], 
+        id: { type: "integer" },
+        description: { type: "string" },
+        phoneNumber: {
+          type: "string",
+          pattern: "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$"
+        },
+        geoLocation: {
+          type: ["object", null],
           properties: {
-            lat: { type: ['string', 'integer', 'float']},
-            lon: { type: ['string', 'integer', 'float']}
+            latitude: { type: "number" },
+            longitude: { type: "number" }
           }
         },
-        name: { type: 'string', minLength: 1, maxLength: 50 },
+        name: { type: "string", minLength: 1, maxLength: 50 },
         address: {
-          type: 'object',
+          type: "object",
           properties: {
-            street: { type: 'string' },
-            city: { type: 'string' },
-            province: { type: 'string' },
-            zipCode: { type: 'string', pattern: '([A-Z]{1}[0-9]{1}){3}' }
+            street: { type: "string" },
+            city: { type: "string" },
+            province: { type: "string" },
+            zipCode: { type: "string", pattern: "([A-Z]{1}[0-9]{1}){3}" }
           }
         },
-        created_at: { type: 'string', format: 'date-time'},
-        updated_at: { type: 'string', format: 'date-time'}
+        created_at: { type: "string", format: "date-time" },
+        updated_at: { type: "string", format: "date-time" }
       }
     };
   }
@@ -46,16 +47,16 @@ class Restaurant extends Model {
     return {
       customers: {
         relation: Model.ManyToManyRelation,
-        modelClass: __dirname + '/User',
+        modelClass: __dirname + "/User",
         join: {
-          from: 'restaurants.id',
+          from: "restaurants.id",
           through: {
-            from: 'restaurants_customers.restaurantId',
-            to: 'restaurants_customers.customerId'
+            from: "restaurants_customers.restaurantId",
+            to: "restaurants_customers.customerId"
           },
-          to: 'users.id'
+          to: "users.id"
         }
-      },
+      }
     };
   }
 }

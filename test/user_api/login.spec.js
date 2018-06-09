@@ -48,7 +48,7 @@ describe("POST /api/v1/user/login", () => {
         res.should.have.status(200);
         res.should.be.json;
         res.body.should.be.a("object");
-        res.body.should.have.property("user_id");
+        res.body.should.have.property("userId");
         done();
       });
   });
