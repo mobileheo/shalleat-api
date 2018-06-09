@@ -1,8 +1,6 @@
-const knex = require("../../../../db"),
-  bcrypt = require("bcrypt"),
-  saltRounds = 10,
-  { User } = require("../../../../models/schema");
-
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+const { User } = require("../../../../models/schema");
 const VALID_PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.* )(?=.*[^a-zA-Z0-9]).{8,}$/i,
   mismatchPassword = "Passwords do not match, please try again.",
   invalidPassword =
