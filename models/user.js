@@ -1,9 +1,19 @@
 const { Model } = require("objection");
+const bcrypt = require("bcryptjs");
 const knex = require("../db");
 
 Model.knex(knex);
 
 const VALID_EMAIL_REGEX = "^([a-z0-9-_.]+@[a-z0-9-.]+.[a-z]{2,4})$";
+const email = {
+  type: ["object", "null"],
+  properties: {
+    email: {
+      type: "string",
+      pattern: VALID_EMAIL_REGEX
+    }
+  }
+};
 
 class User extends Model {
   static get tableName() {
@@ -13,20 +23,56 @@ class User extends Model {
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["email", "password", "firstName", "lastName"],
+      required: ["provider", "password", "firstName", "lastName"],
       properties: {
         id: { type: "integer" },
-        email: {
-          type: "string",
-          pattern: VALID_EMAIL_REGEX
-        },
+        // email: {
+        //   type: "string",
+        //   pattern: VALID_EMAIL_REGEX
+        // },
         firstName: { type: "string", minLength: 1, maxLength: 50 },
         lastName: { type: "string", minLength: 1, maxLength: 50 },
-        provider: { type: ["string"] },
+        provider: {
+          type: "object",
+          properties: {
+            local: {
+              email
+            },
+            google: {
+              email
+            },
+            facebook: {
+              email
+            },
+            instagram: {
+              email
+            }
+          }
+        },
+        geoLocation: {
+          type: ["object", null],
+          properties: {
+            latitude: { type: "number" },
+            longitude: { type: "number" }
+          }
+        },
         created_at: { type: "string", format: "date-time" },
         updated_at: { type: "string", format: "date-time" }
       }
     };
+  }
+
+  async $beforeInsert() {
+    try {
+      // console.log("Before Insert");
+
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(this.password, salt);
+
+      this.password = passwordHash;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   static get relationMappings() {
@@ -44,6 +90,15 @@ class User extends Model {
         }
       }
     };
+  }
+
+  async isValidPassword(newPassword) {
+    try {
+      // console.log("newPassword", newPassword);
+      return await bcrypt.compare(newPassword, this.password);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 
