@@ -23,7 +23,7 @@ passport.use(
       try {
         const user = await User.query().findById(payLoad.sub);
         if (!user) {
-          return don(null, false);
+          return done(null, false);
         }
         done(null, user);
       } catch (error) {
@@ -41,7 +41,7 @@ passport.use(
     async (email, password, done) => {
       try {
         const provider = { local: { email } };
-        console.log("email", email);
+        // console.log("email", email);
         const user = await User.query().findOne({ provider });
         // console.log(user);
         if (!user) return done(null, false);

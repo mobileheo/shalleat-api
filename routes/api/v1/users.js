@@ -15,6 +15,7 @@ const {
   secret
 } = require("../../../controllers/api/v1/users/users");
 const passportSignIn = passport.authenticate("local", { session: false });
+const passportJWT = passport.authenticate("jwt", { session: false });
 
 router
   .route("/signup")
@@ -22,8 +23,6 @@ router
 router
   .route("/signin")
   .post(validateSignIn(signInUserSchemas.authSchema), passportSignIn, signIn);
-router
-  .route("/secret")
-  .get(passport.authenticate("jwt", { session: false }), secret);
+router.route("/secret").get(passportJWT, secret);
 
 module.exports = router;
