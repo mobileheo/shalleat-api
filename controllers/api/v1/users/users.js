@@ -28,6 +28,7 @@ module.exports = {
         console.log(token);
         req.login(user.id, () => res.json({ token }));
       } catch (error) {
+        console.log(error);
         res.status(403).json(error);
       }
     });
@@ -35,5 +36,6 @@ module.exports = {
   signIn: async (req, res, next) => {},
   secret: async (req, res, next) => {
     console.log("here is secret");
+    res.json({ secret: "resource" });
   }
 };

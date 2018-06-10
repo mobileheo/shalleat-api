@@ -1,4 +1,5 @@
 const { Model } = require("objection");
+const bcrypt = require("bcryptjs");
 const knex = require("../db");
 
 Model.knex(knex);
