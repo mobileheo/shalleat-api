@@ -4,17 +4,16 @@ const passport = require("passport");
 const passportConfig = require("../../../passport");
 
 const { validateUser, schemas } = require("../../reqValidations");
-const UsersController = require("../../../controllers/api/v1/users/users");
+const {
+  signUp,
+  signIn,
+  secret
+} = require("../../../controllers/api/v1/users/users");
 
-router
-  .route("/signup")
-  .post(validateUser(schemas.authSchema), UsersController.signUp);
-router.route("/signin").post(UsersController.signIn);
+router.route("/signup").post(validateUser(schemas.authSchema), signUp);
+router.route("/signin").post(signIn);
 router
   .route("/secret")
-  .get(
-    passport.authenticate("jwt", { session: false }),
-    UsersController.secret
-  );
+  .get(passport.authenticate("jwt", { session: false }), secret);
 
 module.exports = router;

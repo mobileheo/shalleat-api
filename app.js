@@ -5,17 +5,13 @@ const fs = require("fs"),
   express = require("express"),
   https = require("https"),
   bodyParser = require("body-parser"),
-  cookieParser = require("cookie-parser"),
   app = express();
 
 if (process.env.NODE_ENV !== "test") {
   app.use(logger("dev"));
 }
 
-app
-  .use(bodyParser.json())
-  .use(cookieParser())
-  .set("json spaces", 2);
+app.use(bodyParser.json()).set("json spaces", 2);
 
 const certOptions = {
   key: fs.readFileSync(path.resolve("./encryption/server.key")),

@@ -11,6 +11,16 @@ class User extends Model {
     return "users";
   }
 
+  async $beforeInsert(queryContext) {
+    await super.$beforeInsert(queryContext);
+    // This can always be done even if there is no running transaction. In that
+    // case `queryContext.transaction` returns the normal knex instance. This
+    // makes sure that the query is not executed outside the original query's
+    // transaction.
+    console.log(queryContext);
+    // await SomeModel.query(queryContext.transaction).insert(whatever);
+  }
+
   static get jsonSchema() {
     return {
       type: "object",

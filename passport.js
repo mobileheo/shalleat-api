@@ -1,18 +1,27 @@
 const passport = require("passport");
-const JwtStrategy = require("passport-jwt").Strategy;
-const { ExtractJwt } = require("passport-jwt");
+const passportJWT = require("passport-jwt");
+const JwtStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 const { JWT_SECRET } = require("./config/authConfig");
 const { User } = require("./models/schema");
+
+// const opts = {
+// jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken(),
+// secretOrKey = 'secret',
+// issuer = 'accounts.examplesoft.com',
+// audience = 'yoursite.net'
+// };
 
 passport.use(
   new JwtStrategy(
     {
-      jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("authorization"),
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
       secretOrKey: JWT_SECRET
     },
     async (payLoad, done) => {
       try {
-        const user = await User.query().findById(payload.sub);
+        console.log([payLoad]);
+        const user = await User.query().findById(payLoad.sub);
         if (!user) {
           return don(null, false);
         }
