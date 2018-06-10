@@ -2,6 +2,7 @@ const passport = require("passport");
 const passportJWT = require("passport-jwt");
 const JwtStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
+const LocalStrategy = require("passport-local").Strategy;
 const { JWT_SECRET } = require("./config/authConfig");
 const { User } = require("./models/schema");
 
@@ -32,3 +33,13 @@ passport.use(
     }
   )
 );
+
+// passport.use(new LocalStrategy({
+//   usernameField: 'email'
+// }, async (email, password, done) => {
+//   try {
+//     const user = await User.query().findOne({"lc"})
+//   } catch (error) {
+
+//   }
+// }));

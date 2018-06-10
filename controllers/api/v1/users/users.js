@@ -17,13 +17,19 @@ const authToken = id =>
 module.exports = {
   signUp: async (req, res, next) => {
     try {
-      const validUser = req.value.body;
+      const { email, firstName, lastName, password } = req.value.body;
+      const provider = { local: { email } };
+      const validUser = {
+        provider,
+        firstName,
+        lastName,
+        password
+      };
       const user = await User.query().insert(validUser);
       const token = authToken(user.id);
 
       res.json({ token });
     } catch (error) {
-      console.log(error);
       res.status(403).json(error);
     }
   },
