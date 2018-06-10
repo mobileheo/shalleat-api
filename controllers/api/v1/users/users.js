@@ -2,8 +2,7 @@ const JWT = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../../../config/authConfig");
 const { User } = require("../../../../models/schema");
 
-const saltRounds = 10;
-const authToken = id =>
+const createToken = id =>
   JWT.sign(
     {
       iss: "ShallEat",
@@ -26,16 +25,20 @@ module.exports = {
         password
       };
       const user = await User.query().insert(validUser);
-      const token = authToken(user.id);
+      const token = createToken(user.id);
 
       res.json({ token });
     } catch (error) {
       res.status(403).json(error);
     }
   },
-  signIn: async (req, res, next) => {},
+  signIn: async (req, res, next) => {
+    const token = createToken(req.user);
+    res.status(200).json({ token });
+    // console.log("signin");
+  },
   secret: async (req, res, next) => {
-    console.log("here is secret");
+    // console.log("here is secret");
     res.json({ secret: "resource" });
   }
 };

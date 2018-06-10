@@ -62,16 +62,16 @@ class User extends Model {
     };
   }
 
-  async $beforeInsert(queryContext) {
+  async $beforeInsert() {
     try {
-      console.log("Before Insert");
+      // console.log("Before Insert");
 
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash(this.password, salt);
 
       this.password = passwordHash;
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   }
 
@@ -90,6 +90,15 @@ class User extends Model {
         }
       }
     };
+  }
+
+  async isValidPassword(newPassword) {
+    try {
+      // console.log("newPassword", newPassword);
+      return await bcrypt.compare(newPassword, this.password);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 

@@ -21,7 +21,6 @@ passport.use(
     },
     async (payLoad, done) => {
       try {
-        console.log([payLoad]);
         const user = await User.query().findById(payLoad.sub);
         if (!user) {
           return don(null, false);
@@ -34,12 +33,26 @@ passport.use(
   )
 );
 
-// passport.use(new LocalStrategy({
-//   usernameField: 'email'
-// }, async (email, password, done) => {
-//   try {
-//     const user = await User.query().findOne({"lc"})
-//   } catch (error) {
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email"
+    },
+    async (email, password, done) => {
+      try {
+        const provider = { local: { email } };
+        console.log("email", email);
+        const user = await User.query().findOne({ provider });
+        // console.log(user);
+        if (!user) return done(null, false);
 
-//   }
-// }));
+        const isCorretPassword = await user.isValidPassword(password);
+        if (!isCorretPassword) return done(null, false);
+
+        done(null, user);
+      } catch (error) {
+        done(error, false);
+      }
+    }
+  )
+);

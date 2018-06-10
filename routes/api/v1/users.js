@@ -3,15 +3,25 @@ const router = require("express-promise-router")();
 const passport = require("passport");
 const passportConfig = require("../../../passport");
 
-const { validateUser, schemas } = require("../../reqValidations");
+const {
+  validateNewUser,
+  validateSignIn,
+  newUserSchemas,
+  signInUserSchemas
+} = require("../../reqValidations");
 const {
   signUp,
   signIn,
   secret
 } = require("../../../controllers/api/v1/users/users");
+const passportSignIn = passport.authenticate("local", { session: false });
 
-router.route("/signup").post(validateUser(schemas.authSchema), signUp);
-router.route("/signin").post(signIn);
+router
+  .route("/signup")
+  .post(validateNewUser(newUserSchemas.authSchema), signUp);
+router
+  .route("/signin")
+  .post(validateSignIn(signInUserSchemas.authSchema), passportSignIn, signIn);
 router
   .route("/secret")
   .get(passport.authenticate("jwt", { session: false }), secret);
