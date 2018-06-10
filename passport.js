@@ -7,7 +7,7 @@ const { User } = require("./models/schema");
 passport.use(
   new JwtStrategy(
     {
-      jwtFromRequest: ExtractJwt.fromAuthHeader("authorization"),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("authorization"),
       secretOrKey: JWT_SECRET
     },
     async (payLoad, done) => {

@@ -11,7 +11,7 @@ const authToken = id =>
       iat: new Date().getTime(),
       exp: new Date().setDate(new Date().getDate() + 1)
     },
-    jwtSecret
+    JWT_SECRET
   );
 
 module.exports = {
@@ -23,7 +23,9 @@ module.exports = {
         validUser.password = password;
         const user = await User.query().insert(validUser);
         delete validUser.password;
+        console.log(validUser);
         const token = authToken(user.id);
+        console.log(token);
         req.login(user.id, () => res.json({ token }));
       } catch (error) {
         res.status(403).json(error);
@@ -32,6 +34,6 @@ module.exports = {
   },
   signIn: async (req, res, next) => {},
   secret: async (req, res, next) => {
-    console.log("UsersController.secret() called!");
+    console.log("here is secret");
   }
 };
