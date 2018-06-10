@@ -1,5 +1,5 @@
 const JWT = require("jsonwebtoken");
-const { jwtSecret } = require("../../../../config/authConfig");
+const { JWT_SECRET } = require("../../../../config/authConfig");
 const { User } = require("../../../../models/schema");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;

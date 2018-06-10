@@ -1,6 +1,6 @@
 module.exports = {
-  bcryptSecret: "[your bcrypt_secrete]",
-  jwtSecret: "[your bcrypt_secrete]",
+  BCRYPT_SSECRET: "[your BCRYPT_SSECRET]",
+  JWT_SECRET: "[your JWT_SECRET]",
   googleConfig: {
     clientID: "[your clientID]",
     clientSecret: "[your clientSecret]",
