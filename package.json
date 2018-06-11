@@ -17,8 +17,8 @@
     "db:test:migrate": "cross-env NODE_ENV=test knex migrate:latest",
     "db:test:seed": "cross-env NODE_ENV=test knex seed:run",
     "db:test:drop": "cross-env NODE_ENV=test dropdb --echo shall_eat_api_test",
-    "test": "cross-env NODE_ENV=test mocha --timeout 10000 tests/**/*.test.js --recursive --exit",
-    "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 10000 tests/**/*.test.js"
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 __tests__/**/*.test.js --recursive --exit",
+    "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 10000 __tests__/**/*.test.js"
   },
   "keywords": [
     "Express.js",
@@ -48,6 +48,7 @@
     "passport-local": "^1.0.0",
     "pg": "^7.4.3",
     "rewire": "^4.0.1",
+    "sinon": "^6.0.0",
     "sinon-chai": "^3.1.0"
   },
   "devDependencies": {
@@ -66,7 +67,7 @@
       "node_modules"
     ],
     "cache": false,
-    "report-dir": "./tests/report"
+    "report-dir": "./__tests__/report"
   },
   "author": "Sunny (Yongseok)",
   "license": "ISC"

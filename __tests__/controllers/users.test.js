@@ -2,17 +2,15 @@ process.env.NODE_ENV = "test";
 
 const chai = require("chai");
 const { expect } = chai;
-const chaiHttp = require("chai-http");
 const faker = require("faker");
-const server = require("../../app");
-const knex = require("../../db");
+const sinon = require("sinon");
+const sinonChai = require("sinon-chai");
+const rewire = require("rewire");
 
 const User = require("../../models/user");
 const { signIn, signUp, secret } = rewire(
   "../../controllers/api/v1/users/users.js"
 );
-
-chai.use(chaiHttp);
 
 let sandbox = null;
 const password = "superSecret1@";
@@ -43,7 +41,7 @@ describe("UsersController", () => {
   };
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
   });
 
   afterEach(() => {
@@ -55,13 +53,15 @@ describe("UsersController", () => {
       sandbox.spy(console, "log");
       sandbox.spy(res, "json");
 
-      return secret(req, res).then(() => {
-        expect(console.log).to.have.benn.called;
+      try {
+        const secret = await secret(req, res);
+        expect(console.log.calledWith()).to.be.ok;
+        expect(console.log).to.have.been.called.with();
         expect(res.json.calledWith({ secret: "resource" })).to.be.ok;
-        expect(res.json).to.have.benn.calledWith({ secret: "resource" });
-      });
-
-      // const secret = await secret(req, res);
+        expect(res.json).to.have.been.called.with({ secret: "resource" });
+      } catch (error) {
+        console.log(error);
+      }
     });
   });
 });
