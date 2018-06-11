@@ -46,7 +46,9 @@
     "passport-instagram": "^1.0.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "pg": "^7.4.3"
+    "pg": "^7.4.3",
+    "rewire": "^4.0.1",
+    "sinon-chai": "^3.1.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
