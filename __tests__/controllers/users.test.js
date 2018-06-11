@@ -1,0 +1,67 @@
+process.env.NODE_ENV = "test";
+
+const chai = require("chai");
+const { expect } = chai;
+const chaiHttp = require("chai-http");
+const faker = require("faker");
+const server = require("../../app");
+const knex = require("../../db");
+
+const User = require("../../models/user");
+const { signIn, signUp, secret } = rewire(
+  "../../controllers/api/v1/users/users.js"
+);
+
+chai.use(chaiHttp);
+
+let sandbox = null;
+const password = "superSecret1@";
+const pwMatch = password;
+describe("UsersController", () => {
+  let req = {
+    user: {
+      id: faker.random.number()
+    },
+    value: {
+      body: {
+        email: faker.internet.email(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        password,
+        pwMatch
+      }
+    }
+  };
+
+  let res = {
+    json: function() {
+      return this;
+    },
+    status: function() {
+      return this;
+    }
+  };
+
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
+  describe("secret", () => {
+    it("should return resource when called", async () => {
+      sandbox.spy(console, "log");
+      sandbox.spy(res, "json");
+
+      return secret(req, res).then(() => {
+        expect(console.log).to.have.benn.called;
+        expect(res.json.calledWith({ secret: "resource" })).to.be.ok;
+        expect(res.json).to.have.benn.calledWith({ secret: "resource" });
+      });
+
+      // const secret = await secret(req, res);
+    });
+  });
+});
