@@ -13,7 +13,12 @@
     "db:make:seed": "knex seed:make",
     "db:make:migration": "knex migrate:make",
     "testdb:create": "createdb --echo shall_eat_api_test",
-    "test": "nyc mocha --timeout 10000 test/**/*.spec.js --recursive --exit"
+    "db:test:create": "cross-env NODE_ENV=test createdb --echo shall_eat_api_test",
+    "db:test:migrate": "cross-env NODE_ENV=test knex migrate:latest",
+    "db:test:seed": "cross-env NODE_ENV=test knex seed:run",
+    "db:test:drop": "cross-env NODE_ENV=test dropdb --echo shall_eat_api_test",
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 tests/**/*.test.js --recursive --exit",
+    "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 10000 tests/**/*.test.js"
   },
   "keywords": [
     "Express.js",
@@ -46,11 +51,20 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
+    "cross-env": "^5.1.6",
     "faker": "^4.1.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
     "nodemon": "^1.17.4",
     "nyc": "^12.0.2"
+  },
+  "nyc": {
+    "exclude": [
+      "test",
+      "node_modules"
+    ],
+    "cache": false,
+    "report-dir": "./tests/report"
   },
   "author": "Sunny (Yongseok)",
   "license": "ISC"
