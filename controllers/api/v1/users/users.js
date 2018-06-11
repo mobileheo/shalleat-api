@@ -16,14 +16,10 @@ const createToken = user =>
 module.exports = {
   signUp: async (req, res, next) => {
     try {
-      const { email, firstName, lastName, password } = req.value.body;
+      const { email, ...restInfo } = req.value.body;
       const provider = { local: { email } };
-      const validUser = {
-        provider,
-        firstName,
-        lastName,
-        password
-      };
+      const validUser = { provider, ...restInfo };
+
       const user = await User.query().insert(validUser);
       const token = createToken(user);
 
@@ -33,13 +29,11 @@ module.exports = {
     }
   },
   signIn: async (req, res, next) => {
-    console.log(req.user);
     const token = createToken(req.user);
+
     res.status(200).json({ token });
-    // console.log("signin");
   },
   secret: async (req, res, next) => {
-    // console.log("here is secret");
     res.json({ secret: "resource" });
   }
 };
