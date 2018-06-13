@@ -12,6 +12,8 @@ const { signIn, signUp, secret } = rewire(
   "../../controllers/api/v1/users/users.js"
 );
 
+chai.use(sinonChai);
+
 let sandbox = null;
 const password = "superSecret1@";
 const pwMatch = password;
@@ -54,11 +56,9 @@ describe("UsersController", () => {
       sandbox.spy(res, "json");
 
       try {
-        const secret = await secret(req, res);
-        expect(console.log.calledWith()).to.be.ok;
-        expect(console.log).to.have.been.called.with();
-        expect(res.json.calledWith({ secret: "resource" })).to.be.ok;
-        expect(res.json).to.have.been.called.with({ secret: "resource" });
+        await secret(req, res);
+        expect(console.log).to.have.been.called;
+        expect(res.json).to.have.been.calledWith({ secret: "resource" });
       } catch (error) {
         console.log(error);
       }

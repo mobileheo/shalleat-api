@@ -34,6 +34,7 @@ module.exports = {
     res.status(200).json({ token });
   },
   secret: async (req, res, next) => {
+    console.log({ secret: "resource" });
     res.json({ secret: "resource" });
   }
 };

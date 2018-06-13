@@ -17,7 +17,7 @@
     "db:test:migrate": "cross-env NODE_ENV=test knex migrate:latest",
     "db:test:seed": "cross-env NODE_ENV=test knex seed:run",
     "db:test:drop": "cross-env NODE_ENV=test dropdb --echo shall_eat_api_test",
-    "test": "cross-env NODE_ENV=test mocha --timeout 10000 __tests__/**/*.test.js --recursive --exit",
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 __tests__/**/*.test.js --exit",
     "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 10000 __tests__/**/*.test.js"
   },
   "keywords": [
@@ -54,7 +54,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
-    "cross-env": "^5.1.6",
+    "cross-env": "^5.2.0",
     "faker": "^4.1.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
