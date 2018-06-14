@@ -6,13 +6,27 @@ const faker = require("faker");
 const sinon = require("sinon");
 const sinonChai = require("sinon-chai");
 const rewire = require("rewire");
+const knex = require("../../db");
 
-const User = require("../../models/user");
+const { User } = require("../../models/schema");
+const UsersController = rewire("../../controllers/api/v1/users/users.js");
+
 const { signIn, signUp, secret } = rewire(
   "../../controllers/api/v1/users/users.js"
 );
 
 chai.use(sinonChai);
+
+const sampleUser = {
+  provider: {
+    local: {
+      email: "sunny@shalleat.com"
+    }
+  },
+  firstName: "Sunny",
+  lastName: "Heo",
+  password: "superSecret1@"
+};
 
 let sandbox = null;
 const password = "superSecret1@";
@@ -24,11 +38,11 @@ describe("UsersController", () => {
     },
     value: {
       body: {
-        email: faker.internet.email(),
+        email: sampleUser.provider.local.email,
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
-        password,
-        pwMatch
+        password
+        // pwMatch
       }
     }
   };
@@ -50,6 +64,62 @@ describe("UsersController", () => {
     sandbox.restore();
   });
 
+  describe("signUp", () => {
+    it("should return 200 if user is not in db and it is successfully saved", async () => {
+      sandbox.spy(res, "json");
+      sandbox.spy(res, "status");
+
+      try {
+        await signUp(req, res);
+        expect(res.status).to.have.been.calledWith(200);
+        expect(res.json.callCount).to.equal(1);
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+
+    it("should return 403 if the user is already in the db.", async () => {
+      sandbox.spy(res, "json");
+      sandbox.spy(res, "status");
+
+      try {
+        // await signUp(req, res);
+        await signUp(req, res);
+        // console.log(res.status);
+        expect(res.status).to.have.been.calledWith(403);
+        expect(res.json).to.have.been.calledWith({
+          error: "Email is already in use"
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+
+    it("should return res.json with fake token.", async () => {
+      sandbox.spy(res, "json");
+      sandbox.spy(res, "status");
+
+      const createToken = UsersController.__set__(
+        "createToken",
+        user => "fakeTokenTest"
+      );
+
+      await User.query()
+        .first()
+        .del();
+
+      try {
+        await UsersController.signUp(req, res);
+        expect(res.status).to.have.been.calledWith(200);
+        expect(res.json).to.have.been.calledWith({
+          token: "fakeTokenTest"
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+  });
+
   describe("secret", () => {
     it("should return resource when called", async () => {
       sandbox.spy(console, "log");
@@ -60,7 +130,7 @@ describe("UsersController", () => {
         expect(console.log).to.have.been.called;
         expect(res.json).to.have.been.calledWith({ secret: "resource" });
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
   });

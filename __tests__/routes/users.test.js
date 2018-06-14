@@ -10,9 +10,10 @@ const knex = require("../../db");
 chai.use(chaiHttp);
 let token;
 describe("User route", () => {
-  const signUp = "/api/v1/users/signup";
-  const signIn = "/api/v1/users/signin";
-  const secret = "/api/v1/users/secret";
+  const PATH = "/api/v1/users";
+  const signUp = `${PATH}/signup`;
+  const signIn = `${PATH}/signin`;
+  const secret = `${PATH}/secret`;
   const password = "superSecret1@";
   const pwMatch = password;
   const preSavedUser = {
@@ -67,7 +68,7 @@ describe("User route", () => {
         expect(res.body).to.be.an("object");
         expect(res.body).to.have.property("token");
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
@@ -81,37 +82,9 @@ describe("User route", () => {
         expect(res).to.be.json;
         expect(res).to.have.status(403);
         expect(res.body).to.be.an("object");
-        expect(res.body).to.have.property("name", "error");
-        expect(res.body).to.have.property("code", "23505");
-        expect(res.body).to.have.property("table", "users");
-        expect(res.body).to.have.property(
-          "constraint",
-          "users_provider_unique"
-        );
+        expect(res.body).to.deep.equal({ error: "Email is already in use" });
       } catch (error) {
-        console.log(error);
-      }
-    });
-
-    it("should return 403 if the given email is already in db", async () => {
-      try {
-        const res = await chai
-          .request(server)
-          .post(signUp)
-          .send(preSavedUser);
-
-        expect(res).to.be.json;
-        expect(res).to.have.status(403);
-        expect(res.body).to.be.an("object");
-        expect(res.body).to.have.property("name", "error");
-        expect(res.body).to.have.property("code", "23505");
-        expect(res.body).to.have.property("table", "users");
-        expect(res.body).to.have.property(
-          "constraint",
-          "users_provider_unique"
-        );
-      } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
   });
@@ -124,7 +97,7 @@ describe("User route", () => {
         expect(res.status).to.equal(401);
         expect(res.text).to.equal("Unauthorized");
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
@@ -138,7 +111,7 @@ describe("User route", () => {
         expect(res.status).to.equal(200);
         expect(res.body).to.deep.equal({ secret: "resource" });
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
   });
@@ -170,7 +143,7 @@ describe("User route", () => {
           }
         ]);
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
@@ -203,7 +176,7 @@ describe("User route", () => {
           }
         ]);
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
@@ -234,7 +207,7 @@ describe("User route", () => {
           }
         ]);
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
