@@ -17,20 +17,8 @@ const { signIn, signUp, secret } = rewire(
 
 chai.use(sinonChai);
 
-const sampleUser = {
-  provider: {
-    local: {
-      email: "sunny@shalleat.com"
-    }
-  },
-  firstName: "Sunny",
-  lastName: "Heo",
-  password: "superSecret1@"
-};
-
 let sandbox = null;
-const password = "superSecret1@";
-const pwMatch = password;
+
 describe("UsersController", () => {
   let req = {
     user: {
@@ -38,11 +26,10 @@ describe("UsersController", () => {
     },
     value: {
       body: {
-        email: sampleUser.provider.local.email,
+        email: "sunny@shalleat.com",
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
-        password
-        // pwMatch
+        password: "superSecret1@"
       }
     }
   };
@@ -83,9 +70,8 @@ describe("UsersController", () => {
       sandbox.spy(res, "status");
 
       try {
-        // await signUp(req, res);
         await signUp(req, res);
-        // console.log(res.status);
+
         expect(res.status).to.have.been.calledWith(403);
         expect(res.json).to.have.been.calledWith({
           error: "Email is already in use"
