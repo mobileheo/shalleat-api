@@ -16,6 +16,7 @@ describe("User route", () => {
   const secret = `${PATH}/secret`;
   const password = "superSecret1@";
   const pwMatch = password;
+
   const preSavedUser = {
     email: faker.internet.email(),
     firstName: "Sunny",
@@ -42,7 +43,7 @@ describe("User route", () => {
       expect(res.status).to.equal(200);
       token = res.body.token;
     } catch (error) {
-      console.log(`Before => error: ${error}`);
+      throw new Error(error);
     }
   });
 
@@ -52,7 +53,7 @@ describe("User route", () => {
       await knex.migrate.latest();
       console.log("Rollback database");
     } catch (error) {
-      console.log(`After => error: ${error}`);
+      throw new Error(error);
     }
   });
   describe("signup", () => {
