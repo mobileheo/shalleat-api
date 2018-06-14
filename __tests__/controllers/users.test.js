@@ -21,9 +21,9 @@ let sandbox = null;
 
 describe("UsersController", () => {
   let req = {
-    user: {
-      id: faker.random.number()
-    },
+    // user: {
+    //   id: faker.random.number()
+    // },
     value: {
       body: {
         email: "sunny@shalleat.com",
