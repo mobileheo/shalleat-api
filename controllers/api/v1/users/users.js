@@ -20,10 +20,13 @@ module.exports = {
       const provider = { local: { email } };
       const validUser = { provider, ...restInfo };
 
+      const foundUser = await User.query().findOne({ provider });
+      if (foundUser) res.status(403).json({ error: "Email is already in use" });
+
       const user = await User.query().insert(validUser);
       const token = createToken(user);
 
-      res.json({ token });
+      res.status(200).json({ token });
     } catch (error) {
       res.status(403).json(error);
     }
@@ -34,6 +37,7 @@ module.exports = {
     res.status(200).json({ token });
   },
   secret: async (req, res, next) => {
-    res.json({ secret: "resource" });
+    console.log({ secret: "resource" });
+    res.status(200).json({ secret: "resource" });
   }
 };

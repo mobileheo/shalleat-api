@@ -17,8 +17,10 @@
     "db:test:migrate": "cross-env NODE_ENV=test knex migrate:latest",
     "db:test:seed": "cross-env NODE_ENV=test knex seed:run",
     "db:test:drop": "cross-env NODE_ENV=test dropdb --echo shall_eat_api_test",
-    "test": "cross-env NODE_ENV=test mocha --timeout 10000 tests/**/*.test.js --recursive --exit",
-    "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 10000 tests/**/*.test.js"
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 __tests__/**/*.test.js --exit",
+    "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 10000 __tests__/**/*.test.js --exit",
+    "text-report": "cross-env NODE_ENV=test nyc --reporter=text-summary mocha --timeout 10000 __tests__/**/*.test.js",
+    "nyc": "cross-env NODE_ENV=test nyc mocha --timeout 10000 __tests__/**/*.test.js"
   },
   "keywords": [
     "Express.js",
@@ -46,12 +48,15 @@
     "passport-instagram": "^1.0.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "pg": "^7.4.3"
+    "pg": "^7.4.3",
+    "rewire": "^4.0.1",
+    "sinon": "^6.0.0",
+    "sinon-chai": "^3.1.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
-    "cross-env": "^5.1.6",
+    "cross-env": "^5.2.0",
     "faker": "^4.1.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
@@ -64,7 +69,7 @@
       "node_modules"
     ],
     "cache": false,
-    "report-dir": "./tests/report"
+    "report-dir": "./__tests__/report"
   },
   "author": "Sunny (Yongseok)",
   "license": "ISC"

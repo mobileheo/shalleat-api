@@ -10,11 +10,13 @@ const knex = require("../../db");
 chai.use(chaiHttp);
 let token;
 describe("User route", () => {
-  const signUp = "/api/v1/users/signup";
-  const signIn = "/api/v1/users/signin";
-  const secret = "/api/v1/users/secret";
+  const PATH = "/api/v1/users";
+  const signUp = `${PATH}/signup`;
+  const signIn = `${PATH}/signin`;
+  const secret = `${PATH}/secret`;
   const password = "superSecret1@";
   const pwMatch = password;
+
   const preSavedUser = {
     email: faker.internet.email(),
     firstName: "Sunny",
@@ -41,7 +43,7 @@ describe("User route", () => {
       expect(res.status).to.equal(200);
       token = res.body.token;
     } catch (error) {
-      console.log(`Before => error: ${error}`);
+      throw new Error(error);
     }
   });
 
@@ -51,7 +53,7 @@ describe("User route", () => {
       await knex.migrate.latest();
       console.log("Rollback database");
     } catch (error) {
-      console.log(`After => error: ${error}`);
+      throw new Error(error);
     }
   });
   describe("signup", () => {
@@ -67,7 +69,7 @@ describe("User route", () => {
         expect(res.body).to.be.an("object");
         expect(res.body).to.have.property("token");
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
@@ -81,37 +83,45 @@ describe("User route", () => {
         expect(res).to.be.json;
         expect(res).to.have.status(403);
         expect(res.body).to.be.an("object");
-        expect(res.body).to.have.property("name", "error");
-        expect(res.body).to.have.property("code", "23505");
-        expect(res.body).to.have.property("table", "users");
-        expect(res.body).to.have.property(
-          "constraint",
-          "users_provider_unique"
-        );
+        expect(res.body).to.deep.equal({ error: "Email is already in use" });
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
-    it("should return 403 if the given email is already in db", async () => {
+    it("should return 400 if password mismatches", async () => {
       try {
+        const invalidUser = { ...newUser, pwMatch: "NotMatch1@" };
         const res = await chai
           .request(server)
           .post(signUp)
-          .send(preSavedUser);
+          .send(invalidUser);
 
         expect(res).to.be.json;
-        expect(res).to.have.status(403);
+        expect(res).to.have.status(400);
         expect(res.body).to.be.an("object");
-        expect(res.body).to.have.property("name", "error");
-        expect(res.body).to.have.property("code", "23505");
-        expect(res.body).to.have.property("table", "users");
-        expect(res.body).to.have.property(
-          "constraint",
-          "users_provider_unique"
-        );
+        expect(res.body).to.deep.equal({
+          error: "Passwords do not match, please try again."
+        });
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
+      }
+    });
+
+    it("should return 400 if password is invalid", async () => {
+      try {
+        const invalidUser = { ...newUser, pwMatch: "Invalid" };
+        const res = await chai
+          .request(server)
+          .post(signUp)
+          .send(invalidUser);
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an("object");
+        expect(res.body).to.have.property("name", "ValidationError");
+      } catch (error) {
+        throw new Error(error);
       }
     });
   });
@@ -124,7 +134,7 @@ describe("User route", () => {
         expect(res.status).to.equal(401);
         expect(res.text).to.equal("Unauthorized");
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
@@ -138,7 +148,7 @@ describe("User route", () => {
         expect(res.status).to.equal(200);
         expect(res.body).to.deep.equal({ secret: "resource" });
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
   });
@@ -170,7 +180,7 @@ describe("User route", () => {
           }
         ]);
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
@@ -203,7 +213,7 @@ describe("User route", () => {
           }
         ]);
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
@@ -234,7 +244,7 @@ describe("User route", () => {
           }
         ]);
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       }
     });
 
