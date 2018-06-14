@@ -87,6 +87,42 @@ describe("User route", () => {
         throw new Error(error);
       }
     });
+
+    it("should return 400 if password mismatches", async () => {
+      try {
+        const invalidUser = { ...newUser, pwMatch: "NotMatch1@" };
+        const res = await chai
+          .request(server)
+          .post(signUp)
+          .send(invalidUser);
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an("object");
+        expect(res.body).to.deep.equal({
+          error: "Passwords do not match, please try again."
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+
+    it("should return 400 if password is invalid", async () => {
+      try {
+        const invalidUser = { ...newUser, pwMatch: "Invalid" };
+        const res = await chai
+          .request(server)
+          .post(signUp)
+          .send(invalidUser);
+
+        expect(res).to.be.json;
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an("object");
+        expect(res.body).to.have.property("name", "ValidationError");
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
   });
 
   describe("secret", () => {

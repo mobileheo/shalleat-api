@@ -5,10 +5,10 @@ module.exports = {
   validateNewUser: schema => (req, res, next) => {
     const result = Joi.validate(req.body, schema);
     const { pwMatch, ...user } = req.body;
-    if (result.error) return res.status(400).json(result.error);
+    if (result.error) res.status(400).json(result.error);
 
     if (user.password !== pwMatch)
-      return res.status(400).json({
+      res.status(400).json({
         error: "Passwords do not match, please try again."
       });
 

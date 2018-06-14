@@ -18,7 +18,9 @@
     "db:test:seed": "cross-env NODE_ENV=test knex seed:run",
     "db:test:drop": "cross-env NODE_ENV=test dropdb --echo shall_eat_api_test",
     "test": "cross-env NODE_ENV=test mocha --timeout 10000 __tests__/**/*.test.js --exit",
-    "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 10000 __tests__/**/*.test.js"
+    "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 10000 __tests__/**/*.test.js --exit",
+    "text-report": "cross-env NODE_ENV=test nyc --reporter=text-summary mocha --timeout 10000 __tests__/**/*.test.js",
+    "nyc": "cross-env NODE_ENV=test nyc mocha --timeout 10000 __tests__/**/*.test.js"
   },
   "keywords": [
     "Express.js",

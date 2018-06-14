@@ -20,10 +20,7 @@ chai.use(sinonChai);
 let sandbox = null;
 
 describe("UsersController", () => {
-  let req = {
-    // user: {
-    //   id: faker.random.number()
-    // },
+  const req = {
     value: {
       body: {
         email: "sunny@shalleat.com",
