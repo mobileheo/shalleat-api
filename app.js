@@ -15,17 +15,6 @@ if (process.env.NODE_ENV !== "test") {
 
 app.use(bodyParser.json()).set("json spaces", 2);
 
-// const whitelist = ["http://localhost:3000", "http://www.shalleat.com"];
-// const corsOptionsDelegate = function(req, callback) {
-//   let corsOptions;
-//   if (whitelist.indexOf(req.header("Origin")) !== -1) {
-//     corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
-//   } else {
-//     corsOptions = { origin: false }; // disable CORS for this request
-//   }
-//   callback(null, corsOptions); // callback expects two parameters: error and options
-// };
-
 const users = require("./routes/api/v1/users");
 app.use(cors(corsOptionsDelegate));
 app.use(cookieParser());
