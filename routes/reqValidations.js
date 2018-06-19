@@ -5,6 +5,7 @@ module.exports = {
   validateNewUser: schema => (req, res, next) => {
     const result = Joi.validate(req.body, schema);
     const { pwMatch, ...user } = req.body;
+
     if (result.error) res.status(400).json(result.error);
 
     if (user.password !== pwMatch)
@@ -40,7 +41,7 @@ module.exports = {
     if (result.error) return res.status(400).json(result.error);
 
     if (!email || !password)
-      return res.status(400).json({
+      res.status(400).json({
         error:
           "Either email or password are missed, please provide both email and password"
       });
@@ -55,9 +56,7 @@ module.exports = {
       email: Joi.string()
         .email()
         .required(),
-      password: Joi.string()
-        .regex(VALID_PASSWORD_REGEX)
-        .required()
+      password: Joi.string().required()
     })
   }
 };

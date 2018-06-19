@@ -42,9 +42,13 @@ passport.use(
       try {
         const provider = { local: { email } };
         const user = await User.query().findOne({ provider });
-        if (!user) return done(null, false);
-        const isCorretPassword = await user.isValidPassword(password);
-        if (!isCorretPassword) return done({ error: "password wrong" }, false);
+        const isCorretPassword = user && (await user.isValidPassword(password));
+
+        if (!isCorretPassword)
+          done(null, false, {
+            message: "Either email or password is wrong."
+          });
+
         done(null, user);
       } catch (error) {
         done(error, false);

@@ -35,8 +35,7 @@ module.exports = {
     }
   },
   signIn: async (req, res, next) => {
-    const { user, error } = req;
-
+    const { user } = req;
     const token = createToken(user);
 
     res.cookie("ShallEat", token, { maxAge, httpOnly });
@@ -44,6 +43,6 @@ module.exports = {
   },
   secret: async (req, res, next) => {
     console.log({ secret: "this is secret" });
-    res.status(200).json({ secret: "resource" });
+    res.status(200).json({ secret: "this is secret" });
   }
 };

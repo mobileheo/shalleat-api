@@ -163,14 +163,14 @@ describe("UsersController", () => {
   });
 
   describe("secret", () => {
-    it("should return resource when called", async () => {
+    it("should return 'this is secret' when called", async () => {
       sandbox.spy(console, "log");
       sandbox.spy(res, "json");
 
       try {
         await secret(req, res);
         expect(console.log).to.have.been.called;
-        expect(res.json).to.have.been.calledWith({ secret: "resource" });
+        expect(res.json).to.have.been.calledWith({ secret: "this is secret" });
       } catch (error) {
         throw new Error(error);
       }
