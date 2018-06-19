@@ -64,10 +64,7 @@ describe("UsersController", () => {
 
       try {
         await signUp(req, res);
-        expect(res.cookie).to.have.been.calledWith({
-          httpOnly: true,
-          maxAge: 3600000
-        });
+
         expect(res.status).to.have.been.calledWith(200);
         expect(res.json.callCount).to.equal(1);
       } catch (error) {
@@ -81,6 +78,7 @@ describe("UsersController", () => {
 
       try {
         await signUp(req, res);
+
         expect(res.status).to.have.been.calledWith(403);
         expect(res.json).to.have.been.calledWith({
           error: "Email is already in use"
@@ -90,7 +88,7 @@ describe("UsersController", () => {
       }
     });
 
-    it("should return res.json with fake token.", async () => {
+    it("should return res.cookie with fake token.", async () => {
       sandbox.spy(res, "cookie");
       sandbox.spy(res, "json");
       sandbox.spy(res, "status");
@@ -118,20 +116,22 @@ describe("UsersController", () => {
     });
   });
 
-  describe("signIn", () => {
-    it("should return token when signIn called", async () => {
+  describe("signIn", async () => {
+    const user = await User.query().first();
+    const req = {
+      user,
+      value: {
+        body: {
+          email: "sunny@shalleat.com",
+          password: "superSecret1@"
+        }
+      }
+    };
+
+    it("should return cookie when signIn called", async () => {
+      sandbox.spy(res, "cookie");
       sandbox.spy(res, "json");
       sandbox.spy(res, "status");
-      const user = await User.query().first();
-      const req = {
-        user,
-        value: {
-          body: {
-            email: "sunny@shalleat.com",
-            password: "superSecret1@"
-          }
-        }
-      };
 
       try {
         await signIn(req, res);
@@ -148,17 +148,6 @@ describe("UsersController", () => {
       sandbox.spy(res, "status");
 
       UsersController.__set__("createToken", user => "fakeTokenTest");
-
-      const user = await User.query().first();
-      const req = {
-        user,
-        value: {
-          body: {
-            email: "sunny@shalleat.com",
-            password: "superSecret1@"
-          }
-        }
-      };
 
       try {
         await UsersController.signIn(req, res);

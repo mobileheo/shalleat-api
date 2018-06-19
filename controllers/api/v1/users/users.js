@@ -43,7 +43,7 @@ module.exports = {
     res.status(200).json({ success: "Authorized" });
   },
   secret: async (req, res, next) => {
-    // console.log({ secret: "resource" });
+    console.log({ secret: "this is secret" });
     res.status(200).json({ secret: "resource" });
   }
 };
