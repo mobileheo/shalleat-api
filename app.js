@@ -1,6 +1,4 @@
-const fs = require("fs"),
-  path = require("path"),
-  environment = process.env.NODE_ENV || "development",
+const environment = process.env.NODE_ENV || "development",
   logger = require("morgan"),
   express = require("express"),
   https = require("https"),
@@ -8,6 +6,7 @@ const fs = require("fs"),
   cors = require("cors"),
   corsOptionsDelegate = require("./config/cors"),
   cookieParser = require("cookie-parser"),
+  { certOptions } = require("./config/authConfig"),
   app = express();
 
 if (process.env.NODE_ENV !== "test") {
@@ -15,11 +14,6 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 app.use(bodyParser.json()).set("json spaces", 2);
-
-const certOptions = {
-  key: fs.readFileSync(path.resolve("./encryption/server.key")),
-  cert: fs.readFileSync(path.resolve("./encryption/server.crt"))
-};
 
 // const whitelist = ["http://localhost:3000", "http://www.shalleat.com"];
 // const corsOptionsDelegate = function(req, callback) {

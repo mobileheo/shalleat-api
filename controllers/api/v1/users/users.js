@@ -1,16 +1,17 @@
 const JWT = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../../../config/authConfig");
 const { User } = require("../../../../models/schema");
-
+const cert = fs.readFileSync("private.key");
 const createToken = user =>
   JWT.sign(
     {
       iss: "ShallEat",
       sub: user.id,
       iat: new Date().getTime(),
-      exp: new Date().setDate(new Date().getDate() + 1)
+      exp: new Date().setTime(new Date().getTime() + 60 * 60 * 1000)
     },
-    JWT_SECRET
+    JWT_SECRET,
+    { expiresIn: "1h" }
   );
 const maxAge = 1000 * 60 * 60;
 const httpOnly = true;
