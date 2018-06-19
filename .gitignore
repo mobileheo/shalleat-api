@@ -1,6 +1,6 @@
 authConfig.js
 encryption/
-report/
+__tests__/report/
 
 
 

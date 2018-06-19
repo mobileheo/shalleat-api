@@ -1,7 +1,7 @@
 process.env.NODE_ENV = "test";
 
 const chai = require("chai");
-const { expect } = chai;
+const { expect, should } = chai;
 const faker = require("faker");
 const sinon = require("sinon");
 const sinonChai = require("sinon-chai");
@@ -14,6 +14,11 @@ const UsersController = rewire("../../controllers/api/v1/users/users.js");
 const { signIn, signUp, secret } = rewire(
   "../../controllers/api/v1/users/users.js"
 );
+
+const cookieOption = {
+  httpOnly: true,
+  maxAge: 1000 * 60 * 60
+};
 
 chai.use(sinonChai);
 
@@ -53,12 +58,16 @@ describe("UsersController", () => {
 
   describe("signUp", () => {
     it("should return 200 if user is not in db and it is successfully saved", async () => {
+      sandbox.spy(res, "cookie");
       sandbox.spy(res, "json");
       sandbox.spy(res, "status");
 
       try {
         await signUp(req, res);
-        console.log(res.json);
+        expect(res.cookie).to.have.been.calledWith({
+          httpOnly: true,
+          maxAge: 3600000
+        });
         expect(res.status).to.have.been.calledWith(200);
         expect(res.json.callCount).to.equal(1);
       } catch (error) {
@@ -72,7 +81,6 @@ describe("UsersController", () => {
 
       try {
         await signUp(req, res);
-
         expect(res.status).to.have.been.calledWith(403);
         expect(res.json).to.have.been.calledWith({
           error: "Email is already in use"
@@ -83,6 +91,7 @@ describe("UsersController", () => {
     });
 
     it("should return res.json with fake token.", async () => {
+      sandbox.spy(res, "cookie");
       sandbox.spy(res, "json");
       sandbox.spy(res, "status");
 
@@ -94,9 +103,14 @@ describe("UsersController", () => {
 
       try {
         await UsersController.signUp(req, res);
+        expect(res.cookie).to.have.been.calledWith(
+          "ShallEat",
+          "fakeTokenTest",
+          cookieOption
+        );
         expect(res.status).to.have.been.calledWith(200);
         expect(res.json).to.have.been.calledWith({
-          token: "fakeTokenTest"
+          success: "Authorized"
         });
       } catch (error) {
         throw new Error(error);
