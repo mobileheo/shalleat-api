@@ -37,6 +37,9 @@ describe("UsersController", () => {
     },
     status: function() {
       return this;
+    },
+    cookie: function() {
+      return this;
     }
   };
 
@@ -55,6 +58,7 @@ describe("UsersController", () => {
 
       try {
         await signUp(req, res);
+        console.log(res.json);
         expect(res.status).to.have.been.calledWith(200);
         expect(res.json.callCount).to.equal(1);
       } catch (error) {
@@ -82,10 +86,7 @@ describe("UsersController", () => {
       sandbox.spy(res, "json");
       sandbox.spy(res, "status");
 
-      const createToken = UsersController.__set__(
-        "createToken",
-        user => "fakeTokenTest"
-      );
+      UsersController.__set__("createToken", user => "fakeTokenTest");
 
       await User.query()
         .first()
@@ -93,6 +94,61 @@ describe("UsersController", () => {
 
       try {
         await UsersController.signUp(req, res);
+        expect(res.status).to.have.been.calledWith(200);
+        expect(res.json).to.have.been.calledWith({
+          token: "fakeTokenTest"
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+  });
+
+  describe("signIn", () => {
+    it("should return token when signIn called", async () => {
+      sandbox.spy(res, "json");
+      sandbox.spy(res, "status");
+      const user = await User.query().first();
+      const req = {
+        user,
+        value: {
+          body: {
+            email: "sunny@shalleat.com",
+            password: "superSecret1@"
+          }
+        }
+      };
+
+      try {
+        await signIn(req, res);
+
+        expect(res.status).to.have.been.calledWith(200);
+        expect(res.json.callCount).to.equal(1);
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+
+    it("should return fake token using rewire", async () => {
+      sandbox.spy(res, "json");
+      sandbox.spy(res, "status");
+
+      UsersController.__set__("createToken", user => "fakeTokenTest");
+
+      const user = await User.query().first();
+      const req = {
+        user,
+        value: {
+          body: {
+            email: "sunny@shalleat.com",
+            password: "superSecret1@"
+          }
+        }
+      };
+
+      try {
+        await UsersController.signIn(req, res);
+
         expect(res.status).to.have.been.calledWith(200);
         expect(res.json).to.have.been.calledWith({
           token: "fakeTokenTest"

@@ -5,6 +5,9 @@ const fs = require("fs"),
   express = require("express"),
   https = require("https"),
   bodyParser = require("body-parser"),
+  cors = require("cors"),
+  corsOptionsDelegate = require("./config/cors"),
+  cookieParser = require("cookie-parser"),
   app = express();
 
 if (process.env.NODE_ENV !== "test") {
@@ -18,9 +21,20 @@ const certOptions = {
   cert: fs.readFileSync(path.resolve("./encryption/server.crt"))
 };
 
-const passport = require("passport");
+// const whitelist = ["http://localhost:3000", "http://www.shalleat.com"];
+// const corsOptionsDelegate = function(req, callback) {
+//   let corsOptions;
+//   if (whitelist.indexOf(req.header("Origin")) !== -1) {
+//     corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+//   } else {
+//     corsOptions = { origin: false }; // disable CORS for this request
+//   }
+//   callback(null, corsOptions); // callback expects two parameters: error and options
+// };
 
 const users = require("./routes/api/v1/users");
+app.use(cors(corsOptionsDelegate));
+app.use(cookieParser());
 
 app.use("/api/v1/users", users);
 

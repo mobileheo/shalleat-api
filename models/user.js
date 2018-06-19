@@ -26,10 +26,9 @@ class User extends Model {
       required: ["provider", "password", "firstName", "lastName"],
       properties: {
         id: { type: "integer" },
-        // email: {
-        //   type: "string",
-        //   pattern: VALID_EMAIL_REGEX
-        // },
+        email: {
+          type: "string"
+        },
         firstName: { type: "string", minLength: 1, maxLength: 50 },
         lastName: { type: "string", minLength: 1, maxLength: 50 },
         provider: {
@@ -94,7 +93,7 @@ class User extends Model {
 
   async isValidPassword(newPassword) {
     try {
-      // console.log("newPassword", newPassword);
+      console.log(newPassword);
       return await bcrypt.compare(newPassword, this.password);
     } catch (error) {
       throw new Error(error);

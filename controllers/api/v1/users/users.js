@@ -12,6 +12,8 @@ const createToken = user =>
     },
     JWT_SECRET
   );
+const maxAge = 1000 * 60 * 60;
+const httpOnly = true;
 
 module.exports = {
   signUp: async (req, res, next) => {
@@ -26,18 +28,22 @@ module.exports = {
       const user = await User.query().insert(validUser);
       const token = createToken(user);
 
-      res.status(200).json({ token });
+      res.cookie("ShallEat", token, { maxAge, httpOnly });
+      res.status(200).json({ success: "Authorized" });
     } catch (error) {
       res.status(403).json(error);
     }
   },
   signIn: async (req, res, next) => {
-    const token = createToken(req.user);
+    const { user, error } = req;
 
-    res.status(200).json({ token });
+    const token = createToken(user);
+
+    res.cookie("ShallEat", token, { maxAge, httpOnly });
+    res.status(200).json({ success: "Authorized" });
   },
   secret: async (req, res, next) => {
-    console.log({ secret: "resource" });
+    // console.log({ secret: "resource" });
     res.status(200).json({ secret: "resource" });
   }
 };
