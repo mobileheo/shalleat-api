@@ -38,9 +38,9 @@ module.exports = {
   signIn: async (req, res, next) => {
     const { user } = req;
     const token = createToken(user);
-
-    res.cookie("ShallEat", token, { maxAge, httpOnly, secure });
-    res.status(200).json({ success: "Authorized" });
+    const { id } = user;
+    res.cookie("ShallEat", token, { maxAge, httpOnly });
+    res.status(200).json({ id, success: "Authorized" });
   },
   secret: async (req, res, next) => {
     console.log({ secret: "this is secret" });

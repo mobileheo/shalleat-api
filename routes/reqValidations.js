@@ -1,5 +1,7 @@
 const Joi = require("joi");
-const VALID_PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.* )(?=.*[^a-zA-Z0-9]).{8,}$/i;
+const VALID_PASSWORD_REGEX = new RegExp(
+  "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
+);
 
 module.exports = {
   validateNewUser: schema => (req, res, next) => {
