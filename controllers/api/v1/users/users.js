@@ -1,20 +1,19 @@
 const JWT = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../../../config/authConfig");
 const { User } = require("../../../../models/schema");
-const cert = fs.readFileSync("private.key");
+
 const createToken = user =>
   JWT.sign(
     {
       iss: "ShallEat",
-      sub: user.id,
-      iat: new Date().getTime(),
-      exp: new Date().setTime(new Date().getTime() + 60 * 60 * 1000)
+      sub: user.id
     },
     JWT_SECRET,
     { expiresIn: "1h" }
   );
 const maxAge = 1000 * 60 * 60;
 const httpOnly = true;
+// const secure = true;
 
 module.exports = {
   signUp: async (req, res, next) => {
@@ -27,19 +26,20 @@ module.exports = {
       if (foundUser) res.status(403).json({ error: "Email is already in use" });
 
       const user = await User.query().insert(validUser);
-      const token = createToken(user);
+      const token = await createToken(user);
 
       res.cookie("ShallEat", token, { maxAge, httpOnly });
       res.status(200).json({ success: "Authorized" });
     } catch (error) {
-      res.status(403).json(error);
+      console.log;
+      res.status(404).json(error);
     }
   },
   signIn: async (req, res, next) => {
     const { user } = req;
     const token = createToken(user);
 
-    res.cookie("ShallEat", token, { maxAge, httpOnly });
+    res.cookie("ShallEat", token, { maxAge, httpOnly, secure });
     res.status(200).json({ success: "Authorized" });
   },
   secret: async (req, res, next) => {
