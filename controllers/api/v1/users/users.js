@@ -23,7 +23,7 @@ module.exports = {
       const validUser = { provider, ...restInfo };
 
       const foundUser = await User.query().findOne({ provider });
-      if (foundUser) res.status(403).json({ error: "Email is already in use" });
+      if (foundUser) res.status(422).json({ error: "Email is already in use" });
 
       const user = await User.query().insert(validUser);
       const token = await createToken(user);
