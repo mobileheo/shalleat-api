@@ -1,22 +1,20 @@
 const passport = require("passport");
 const passportJWT = require("passport-jwt");
 const JwtStrategy = passportJWT.Strategy;
-const ExtractJWT = passportJWT.ExtractJwt;
 const LocalStrategy = require("passport-local").Strategy;
 const { JWT_SECRET } = require("./config/authConfig");
 const { User } = require("./models/schema");
 
-// const opts = {
-// jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken(),
-// secretOrKey = 'secret',
-// issuer = 'accounts.examplesoft.com',
-// audience = 'yoursite.net'
-// };
+const cookieExtractor = req => {
+  let token = null;
+  if (req && req.cookies) token = req.cookies["ShallEat"];
+  return token;
+};
 
 passport.use(
   new JwtStrategy(
     {
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: cookieExtractor,
       secretOrKey: JWT_SECRET
     },
     async (payLoad, done) => {
@@ -41,14 +39,14 @@ passport.use(
     async (email, password, done) => {
       try {
         const provider = { local: { email } };
-        // console.log("email", email);
         const user = await User.query().findOne({ provider });
-        // console.log(user);
-        if (!user) return done(null, false);
+        const isCorretPassword = user && (await user.isValidPassword(password));
 
-        const isCorretPassword = await user.isValidPassword(password);
-        if (!isCorretPassword) return done(null, false);
-
+        if (!isCorretPassword) {
+          done(null, false, {
+            message: "Either email or password is wrong."
+          });
+        }
         done(null, user);
       } catch (error) {
         done(error, false);

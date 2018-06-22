@@ -1,7 +1,7 @@
 process.env.NODE_ENV = "test";
 
 const chai = require("chai");
-const { expect } = chai;
+const { expect, should } = chai;
 const faker = require("faker");
 const sinon = require("sinon");
 const sinonChai = require("sinon-chai");
@@ -14,6 +14,11 @@ const UsersController = rewire("../../controllers/api/v1/users/users.js");
 const { signIn, signUp, secret } = rewire(
   "../../controllers/api/v1/users/users.js"
 );
+
+const cookieOption = {
+  httpOnly: true,
+  maxAge: 1000 * 60 * 60
+};
 
 chai.use(sinonChai);
 
@@ -37,6 +42,9 @@ describe("UsersController", () => {
     },
     status: function() {
       return this;
+    },
+    cookie: function() {
+      return this;
     }
   };
 
@@ -50,11 +58,13 @@ describe("UsersController", () => {
 
   describe("signUp", () => {
     it("should return 200 if user is not in db and it is successfully saved", async () => {
+      sandbox.spy(res, "cookie");
       sandbox.spy(res, "json");
       sandbox.spy(res, "status");
 
       try {
         await signUp(req, res);
+
         expect(res.status).to.have.been.calledWith(200);
         expect(res.json.callCount).to.equal(1);
       } catch (error) {
@@ -62,14 +72,14 @@ describe("UsersController", () => {
       }
     });
 
-    it("should return 403 if the user is already in the db.", async () => {
+    it("should return 422 if the user is already in the db.", async () => {
       sandbox.spy(res, "json");
       sandbox.spy(res, "status");
 
       try {
         await signUp(req, res);
 
-        expect(res.status).to.have.been.calledWith(403);
+        expect(res.status).to.have.been.calledWith(422);
         expect(res.json).to.have.been.calledWith({
           error: "Email is already in use"
         });
@@ -78,14 +88,12 @@ describe("UsersController", () => {
       }
     });
 
-    it("should return res.json with fake token.", async () => {
+    it("should return res.cookie with fake token.", async () => {
+      sandbox.spy(res, "cookie");
       sandbox.spy(res, "json");
       sandbox.spy(res, "status");
 
-      const createToken = UsersController.__set__(
-        "createToken",
-        user => "fakeTokenTest"
-      );
+      UsersController.__set__("createToken", user => "fakeTokenTest");
 
       await User.query()
         .first()
@@ -93,6 +101,59 @@ describe("UsersController", () => {
 
       try {
         await UsersController.signUp(req, res);
+
+        const user = await User.query().first();
+        const { password, created_at, updated_at, ...currentUser } = user;
+
+        expect(res.cookie).to.have.been.calledWith(
+          "ShallEat",
+          "fakeTokenTest",
+          cookieOption
+        );
+        expect(res.status).to.have.been.calledWith(200);
+        expect(res.json).to.have.been.calledWith(currentUser);
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+  });
+
+  describe("signIn", async () => {
+    const user = await User.query().first();
+    const req = {
+      user,
+      value: {
+        body: {
+          email: "sunny@shalleat.com",
+          password: "superSecret1@"
+        }
+      }
+    };
+
+    it("should return cookie when signIn called", async () => {
+      sandbox.spy(res, "cookie");
+      sandbox.spy(res, "json");
+      sandbox.spy(res, "status");
+
+      try {
+        await signIn(req, res);
+
+        expect(res.status).to.have.been.calledWith(200);
+        expect(res.json.callCount).to.equal(1);
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+
+    it("should return fake token using rewire", async () => {
+      sandbox.spy(res, "json");
+      sandbox.spy(res, "status");
+
+      UsersController.__set__("createToken", user => "fakeTokenTest");
+
+      try {
+        await UsersController.signIn(req, res);
+
         expect(res.status).to.have.been.calledWith(200);
         expect(res.json).to.have.been.calledWith({
           token: "fakeTokenTest"
@@ -104,14 +165,14 @@ describe("UsersController", () => {
   });
 
   describe("secret", () => {
-    it("should return resource when called", async () => {
+    it("should return 'this is secret' when called", async () => {
       sandbox.spy(console, "log");
       sandbox.spy(res, "json");
 
       try {
         await secret(req, res);
         expect(console.log).to.have.been.called;
-        expect(res.json).to.have.been.calledWith({ secret: "resource" });
+        expect(res.json).to.have.been.calledWith({ secret: "this is secret" });
       } catch (error) {
         throw new Error(error);
       }

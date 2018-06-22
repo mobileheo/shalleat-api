@@ -8,7 +8,7 @@ const server = require("../../app");
 const knex = require("../../db");
 
 chai.use(chaiHttp);
-let token;
+let header;
 describe("User route", () => {
   const PATH = "/api/v1/users";
   const signUp = `${PATH}/signup`;
@@ -41,7 +41,8 @@ describe("User route", () => {
         .send(preSavedUser);
 
       expect(res.status).to.equal(200);
-      token = res.body.token;
+
+      header = res.header;
     } catch (error) {
       throw new Error(error);
     }
@@ -57,7 +58,7 @@ describe("User route", () => {
     }
   });
   describe("signup", () => {
-    it("should create new user if email not found", async () => {
+    it("should create new user with cookie if given email not found on db", async () => {
       try {
         const res = await chai
           .request(server)
@@ -67,29 +68,30 @@ describe("User route", () => {
         expect(res).to.be.json;
         expect(res).to.have.status(200);
         expect(res.body).to.be.an("object");
-        expect(res.body).to.have.property("token");
+        expect(res.body).to.have.property("provider");
+        expect(res.headers).to.have.property("set-cookie");
       } catch (error) {
         throw new Error(error);
       }
     });
 
-    it("should return 403 if the given email is already in db", async () => {
+    it("should return 403 and not set cookie if the given email is already in db", async () => {
       try {
         const res = await chai
           .request(server)
           .post(signUp)
           .send(preSavedUser);
-
         expect(res).to.be.json;
-        expect(res).to.have.status(403);
+        expect(res).to.have.status(422);
         expect(res.body).to.be.an("object");
         expect(res.body).to.deep.equal({ error: "Email is already in use" });
+        expect(res.headers).not.to.have.property("set-cookie");
       } catch (error) {
         throw new Error(error);
       }
     });
 
-    it("should return 400 if password mismatches", async () => {
+    it("should return 400 and not set cookie if password mismatches", async () => {
       try {
         const invalidUser = { ...newUser, pwMatch: "NotMatch1@" };
         const res = await chai
@@ -103,12 +105,13 @@ describe("User route", () => {
         expect(res.body).to.deep.equal({
           error: "Passwords do not match, please try again."
         });
+        expect(res.headers).not.to.have.property("set-cookie");
       } catch (error) {
         throw new Error(error);
       }
     });
 
-    it("should return 400 if password is invalid", async () => {
+    it("should return 400 and not set cookie if password is invalid", async () => {
       try {
         const invalidUser = { ...newUser, pwMatch: "Invalid" };
         const res = await chai
@@ -120,33 +123,7 @@ describe("User route", () => {
         expect(res).to.have.status(400);
         expect(res.body).to.be.an("object");
         expect(res.body).to.have.property("name", "ValidationError");
-      } catch (error) {
-        throw new Error(error);
-      }
-    });
-  });
-
-  describe("secret", () => {
-    it("should return status 401 if no token provided", async () => {
-      try {
-        const res = await chai.request(server).get(secret);
-
-        expect(res.status).to.equal(401);
-        expect(res.text).to.equal("Unauthorized");
-      } catch (error) {
-        throw new Error(error);
-      }
-    });
-
-    it("should return status 200 if valid token provided", async () => {
-      try {
-        const res = await chai
-          .request(server)
-          .get(secret)
-          .set("Authorization", `Bearer ${token}`);
-
-        expect(res.status).to.equal(200);
-        expect(res.body).to.deep.equal({ secret: "resource" });
+        expect(res.headers).not.to.have.property("set-cookie");
       } catch (error) {
         throw new Error(error);
       }
@@ -154,7 +131,7 @@ describe("User route", () => {
   });
 
   describe("signin", () => {
-    it("should return error 400 if user email and password empty", async () => {
+    it("should return error 400 and not set cookie if user email and password empty", async () => {
       let user = {};
       try {
         const res = await chai
@@ -179,12 +156,13 @@ describe("User route", () => {
             }
           }
         ]);
+        expect(res.headers).not.to.have.property("set-cookie");
       } catch (error) {
         throw new Error(error);
       }
     });
 
-    it("should return error 400 if user password empty", async () => {
+    it("should return error 400 and not set cookie if user password empty", async () => {
       const { email } = preSavedUser;
       const user = { email };
       try {
@@ -212,12 +190,13 @@ describe("User route", () => {
             }
           }
         ]);
+        expect(res.headers).not.to.have.property("set-cookie");
       } catch (error) {
         throw new Error(error);
       }
     });
 
-    it("should return error 400 if user email empty", async () => {
+    it("should return error 400 and not set cookie if user email empty", async () => {
       const { password } = preSavedUser;
       const user = { password };
       try {
@@ -243,12 +222,13 @@ describe("User route", () => {
             }
           }
         ]);
+        expect(res.headers).not.to.have.property("set-cookie");
       } catch (error) {
         throw new Error(error);
       }
     });
 
-    it("should return 200 and token if given email and password valid ", async () => {
+    it("should return 200 and cookie if given email and password valid ", async () => {
       try {
         const { email, password } = preSavedUser;
         const userInput = { email, password };
@@ -259,7 +239,68 @@ describe("User route", () => {
 
         expect(res.status).to.be.equal(200);
         expect(res.body).not.to.be.empty;
-        expect(res.body).to.have.property("token");
+        expect(res.body).to.have.property("provider");
+        expect(res.headers).to.have.property("set-cookie");
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+
+    it("should return 401 if user password not match", async () => {
+      try {
+        const { email } = preSavedUser;
+        const password = "fakePassword!@";
+        const userInput = { email, password };
+        const res = await chai
+          .request(server)
+          .post(signIn)
+          .send(userInput);
+
+        expect(res.status).to.be.equal(401);
+        expect(res.body).to.be.empty;
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+  });
+
+  describe("secret", () => {
+    it("should return status 401 if no cookie provided", async () => {
+      try {
+        const res = await chai.request(server).get(secret);
+
+        expect(res.status).to.equal(401);
+        expect(res.text).to.equal("Unauthorized");
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+
+    it("should return status 401 if invalid cookie provided", async () => {
+      try {
+        const [cookie] = header["set-cookie"];
+        const res = await chai
+          .request(server)
+          .get(secret)
+          .set("Cookie", "invalid");
+
+        expect(res.status).to.equal(401);
+        expect(res.text).to.equal("Unauthorized");
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
+
+    it("should return status 200 if valid cookie provided", async () => {
+      try {
+        const [cookie] = header["set-cookie"];
+        const res = await chai
+          .request(server)
+          .get(secret)
+          .set("Cookie", cookie);
+
+        expect(res.status).to.equal(200);
+        expect(res.body).to.deep.equal({ secret: "this is secret" });
       } catch (error) {
         throw new Error(error);
       }
