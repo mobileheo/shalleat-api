@@ -72,14 +72,14 @@ describe("UsersController", () => {
       }
     });
 
-    it("should return 403 if the user is already in the db.", async () => {
+    it("should return 422 if the user is already in the db.", async () => {
       sandbox.spy(res, "json");
       sandbox.spy(res, "status");
 
       try {
         await signUp(req, res);
 
-        expect(res.status).to.have.been.calledWith(403);
+        expect(res.status).to.have.been.calledWith(422);
         expect(res.json).to.have.been.calledWith({
           error: "Email is already in use"
         });
@@ -101,15 +101,17 @@ describe("UsersController", () => {
 
       try {
         await UsersController.signUp(req, res);
+
+        const user = await User.query().first();
+        const { password, created_at, updated_at, ...currentUser } = user;
+
         expect(res.cookie).to.have.been.calledWith(
           "ShallEat",
           "fakeTokenTest",
           cookieOption
         );
         expect(res.status).to.have.been.calledWith(200);
-        expect(res.json).to.have.been.calledWith({
-          success: "Authorized"
-        });
+        expect(res.json).to.have.been.calledWith(currentUser);
       } catch (error) {
         throw new Error(error);
       }

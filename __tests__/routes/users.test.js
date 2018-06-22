@@ -68,7 +68,7 @@ describe("User route", () => {
         expect(res).to.be.json;
         expect(res).to.have.status(200);
         expect(res.body).to.be.an("object");
-        expect(res.body).to.have.property("success");
+        expect(res.body).to.have.property("provider");
         expect(res.headers).to.have.property("set-cookie");
       } catch (error) {
         throw new Error(error);
@@ -82,7 +82,7 @@ describe("User route", () => {
           .post(signUp)
           .send(preSavedUser);
         expect(res).to.be.json;
-        expect(res).to.have.status(403);
+        expect(res).to.have.status(422);
         expect(res.body).to.be.an("object");
         expect(res.body).to.deep.equal({ error: "Email is already in use" });
         expect(res.headers).not.to.have.property("set-cookie");
@@ -239,7 +239,7 @@ describe("User route", () => {
 
         expect(res.status).to.be.equal(200);
         expect(res.body).not.to.be.empty;
-        expect(res.body).to.have.property("success");
+        expect(res.body).to.have.property("provider");
         expect(res.headers).to.have.property("set-cookie");
       } catch (error) {
         throw new Error(error);
