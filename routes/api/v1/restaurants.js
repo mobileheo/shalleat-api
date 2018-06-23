@@ -4,13 +4,15 @@ const passport = require("passport");
 const passportConfig = require("../../../passport");
 
 const {
-  findAllRestaurants
+  findAllRestaurants,
+  getRestaurantDetail
 } = require("../../../controllers/api/v1/restaurants/restaurants");
 
-const passportSignIn = passport.authenticate("local", { session: false });
+// const passportSignIn = passport.authenticate("local", { session: false });
 const passportJWT = passport.authenticate("jwt", { session: false });
 
 router.route("/all").post(passportJWT, findAllRestaurants);
+router.route("/detail").post(passportJWT, getRestaurantDetail);
 
 // router
 //   .route("/signin")
