@@ -1,7 +1,6 @@
 const JWT = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../../../config/authConfig");
 const { User } = require("../../../../models/schema");
-const fetch = require("node-fetch");
 
 const createToken = user =>
   JWT.sign(
@@ -43,11 +42,6 @@ module.exports = {
     const { password, ...currentUser } = user;
     res.cookie("ShallEat", token, { maxAge, httpOnly });
     res.status(200).json(currentUser);
-    // const resp = await fetch(
-    //   "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=AIzaSyDzONumuxmbBTTgLWygcFayfgoFMHpmAgg&input=pizza+near%20par"
-    // );
-    // const result = await resp.json();
-    // res.status(200).json(result);
   },
   secret: async (req, res, next) => {
     console.log({ secret: "this is secret" });
