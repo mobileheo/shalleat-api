@@ -13,6 +13,7 @@ const {
 const {
   signUp,
   signIn,
+  signOut,
   secret
 } = require("../../../controllers/api/v1/users/users");
 
@@ -26,6 +27,8 @@ router
 router
   .route("/signin")
   .post(validateSignIn(signInUserSchemas.authSchema), passportSignIn, signIn);
+
+router.route("/signout").get(signOut);
 
 router.route("/secret").get(passportJWT, secret);
 

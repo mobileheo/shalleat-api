@@ -48,7 +48,7 @@ module.exports = {
       console.log(error);
     }
   },
-  async getPlaceDetail(placeId, filters) {
+  async getPlaceSchedule(placeId, filters) {
     try {
       const res = await fetch(placeDetailUrl(placeId, filters));
       return await res.json();

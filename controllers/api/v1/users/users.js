@@ -32,7 +32,6 @@ module.exports = {
       res.cookie("ShallEat", token, { maxAge, httpOnly });
       res.status(200).json(currentUser);
     } catch (error) {
-      console.log;
       res.status(404).json(error);
     }
   },
@@ -42,6 +41,10 @@ module.exports = {
     const { password, ...currentUser } = user;
     res.cookie("ShallEat", token, { maxAge, httpOnly });
     res.status(200).json(currentUser);
+  },
+  signOut: async (req, res, next) => {
+    res.cookie("ShallEat", { token: null }, { maxAge, httpOnly });
+    res.status(200).json({ message: "Token has been removed" });
   },
   secret: async (req, res, next) => {
     console.log({ secret: "this is secret" });
