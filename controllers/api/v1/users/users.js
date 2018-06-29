@@ -32,16 +32,37 @@ module.exports = {
       res.cookie("ShallEat", token, { maxAge, httpOnly });
       res.status(200).json(currentUser);
     } catch (error) {
-      console.log;
       res.status(404).json(error);
     }
   },
   signIn: async (req, res, next) => {
-    const { user } = req;
-    const token = createToken(user);
-    const { password, ...currentUser } = user;
-    res.cookie("ShallEat", token, { maxAge, httpOnly });
-    res.status(200).json(currentUser);
+    try {
+      const { user } = req;
+      const token = createToken(user);
+      const { password, ...currentUser } = user;
+      res.cookie("ShallEat", token, { maxAge, httpOnly });
+      res.status(200).json(currentUser);
+    } catch (error) {
+      res.status(404).json(error);
+    }
+  },
+  signOut: async (req, res, next) => {
+    try {
+      res.cookie("ShallEat", { token: null }, { maxAge: 0, httpOnly });
+      res.status(200).json({ message: "You are successfully signed out :)" });
+    } catch (error) {
+      res.status(404).json(error);
+    }
+  },
+  currentUser: async (req, res, next) => {
+    try {
+      const { user } = req;
+      console.log(user);
+      const { password, ...currentUser } = user;
+      user ? res.status(200).json(currentUser) : res.status(404);
+    } catch (error) {
+      res.status(404).json(error);
+    }
   },
   secret: async (req, res, next) => {
     console.log({ secret: "this is secret" });

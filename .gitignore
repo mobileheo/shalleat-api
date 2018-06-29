@@ -1,10 +1,15 @@
+# API keys
 authConfig.js
+
+#SSL encryption 
 encryption/
 __encryption/
+#Test reports
 __tests__/report/
 
 
-
+#vscode configuration
+.vscode
 
 # Created by https://www.gitignore.io/api/node,macos,linux
 
