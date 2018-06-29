@@ -6,11 +6,8 @@ const openToday = weekDays => {
   const n = date.getDay() + 6;
   const todayHours = weekDays[n % 7];
 
+  // console.log(todayHours);
   return !todayHours.includes("Closed");
-
-  // console.log(todayHours.indexOf(":"));
-  // console.log("key", todayHours.slice(0, 6));
-  // console.log("key", todayHours.slice(8, todayHours.length));
 };
 const getClosedDay = weekDays => {
   let closedDays = [];
@@ -25,11 +22,9 @@ const getTodayHours = (periods, weekDays = []) => {
   const date = new Date();
   const n = date.getDay();
   const closedDays = getClosedDay(weekDays);
+
   if (!openToday(weekDays)) return "Closed";
-
-  const todayHours = closedDays.includes(n) ? periods[n - 1] : periods[n];
-
-  return todayHours;
+  return n > closedDays.length ? periods[n - closedDays.length] : periods[n];
 };
 
 const getNextDayHours = (todayHours, periods) => {
@@ -64,6 +59,7 @@ module.exports = {
         placeId,
         filters
       );
+      // console.log(restaruantSchedule.result);
       const { name, opening_hours: openingHours } = restaruantSchedule.result;
       if (openingHours) {
         const {
@@ -73,6 +69,7 @@ module.exports = {
         } = openingHours;
         const isOpenToday = openToday(weekDays);
         const todayHours = getTodayHours(periods, weekDays);
+        // console.log(todayHours);
         const nextDayHours = getNextDayHours(todayHours, periods);
 
         return res.status(200).json({
