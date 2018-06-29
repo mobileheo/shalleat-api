@@ -48,7 +48,7 @@ module.exports = {
   },
   signOut: async (req, res, next) => {
     try {
-      res.cookie("ShallEat", { token: null }, { maxAge, httpOnly });
+      res.cookie("ShallEat", { token: null }, { maxAge: 0, httpOnly });
       res.status(200).json({ message: "You are successfully signed out :)" });
     } catch (error) {
       res.status(404).json(error);

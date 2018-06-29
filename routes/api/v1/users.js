@@ -29,7 +29,7 @@ router
   .route("/signin")
   .post(validateSignIn(signInUserSchemas.authSchema), passportSignIn, signIn);
 
-router.route("/signout").get(signOut);
+router.route("/signout").get(passportJWT, signOut);
 
 router.route("/current_user").get(passportJWT, currentUser);
 

@@ -40,11 +40,19 @@ const getNextDayHours = (todayHours, periods) => {
 
 module.exports = {
   findAllRestaurants: async (req, res, next) => {
-    // const { user } = req;
     const filters = req.body;
     try {
       const restaurants = await Restaurant.findNearby(filters);
       res.status(200).json(restaurants);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getNextRests: async (req, res, next) => {
+    const { pageToken } = req.body;
+    try {
+      const nextRests = await Restaurant.getNext(pageToken);
+      res.status(200).json(nextRests);
     } catch (error) {
       console.log(error);
     }
@@ -80,8 +88,6 @@ module.exports = {
         name,
         notAvailable: "The business hour for this restaurant is not available."
       });
-
-      // res.json(restaruantSchedule);
     } catch (error) {
       console.log(error);
     }
