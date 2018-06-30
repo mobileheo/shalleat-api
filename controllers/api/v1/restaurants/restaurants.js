@@ -5,10 +5,16 @@ const openToday = weekDays => {
   const date = new Date();
   const n = date.getDay() + 6;
   const todayHours = weekDays[n % 7];
-
-  // console.log(todayHours);
   return !todayHours.includes("Closed");
 };
+
+const openTwentyFour = weekDays => {
+  const date = new Date();
+  const n = date.getDay() + 6;
+  const todayHours = weekDays[n % 7];
+  return todayHours.includes("Open 24 hours");
+};
+
 const getClosedDay = weekDays => {
   let closedDays = [];
   weekDays &&
@@ -24,6 +30,8 @@ const getTodayHours = (periods, weekDays = []) => {
   const closedDays = getClosedDay(weekDays);
 
   if (!openToday(weekDays)) return "Closed";
+  if (openTwentyFour(weekDays)) return "Open 24 hours";
+
   return n > closedDays.length ? periods[n - closedDays.length] : periods[n];
 };
 
@@ -59,7 +67,7 @@ module.exports = {
         placeId,
         filters
       );
-      // console.log(restaruantSchedule.result);
+
       const { name, opening_hours: openingHours } = restaruantSchedule.result;
       if (openingHours) {
         const {
@@ -69,9 +77,13 @@ module.exports = {
         } = openingHours;
         const isOpenToday = openToday(weekDays);
         const todayHours = getTodayHours(periods, weekDays);
-        // console.log(todayHours);
         const nextDayHours = getNextDayHours(todayHours, periods);
 
+        if (todayHours === "Open 24 hours") {
+          return res.status(200).json({
+            immortal: "Open 24 hours"
+          });
+        }
         return res.status(200).json({
           name,
           isOpenToday,
@@ -81,8 +93,7 @@ module.exports = {
           weekDays
         });
       }
-      res.status(200).json({
-        name,
+      return res.status(200).json({
         notAvailable: "The business hour for this restaurant is not available."
       });
     } catch (error) {
