@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const busyHours = require("busy-hours");
 const { GOOGLE_PLACE_API } = require("../config/authConfig");
 const google_place_url = "https://maps.googleapis.com/maps/api/place";
 
@@ -71,5 +72,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     }
+  },
+  async getBusyHours(placeId) {
+    const data = await busyHours(placeId, GOOGLE_PLACE_API);
+    console.log(data);
+    return data;
   }
 };

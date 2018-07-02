@@ -99,5 +99,14 @@ module.exports = {
     } catch (error) {
       console.log(error);
     }
+  },
+  getBusyHours: async (req, res, next) => {
+    const { placeId } = req.body;
+    try {
+      const nextRests = await Restaurant.getBusyHours(placeId);
+      res.status(200).json(nextRests);
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
