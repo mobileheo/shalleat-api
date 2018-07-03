@@ -1,10 +1,13 @@
 const fetch = require("node-fetch");
+const busyHours = require("busy-hours");
 const { GOOGLE_PLACE_API } = require("../config/authConfig");
 const google_place_url = "https://maps.googleapis.com/maps/api/place";
 
 const nearbySearchUrl = filters => {
-  const { lat, lng, radius } = filters;
-  return `${google_place_url}/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=restaurant&key=${GOOGLE_PLACE_API}`;
+  const { lat, lng, radius, typeKeyword } = filters;
+  return typeKeyword
+    ? `${google_place_url}/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=restaurant&keyword=${typeKeyword}&key=${GOOGLE_PLACE_API}`
+    : `${google_place_url}/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=restaurant&key=${GOOGLE_PLACE_API}`;
 };
 
 const getRests = async filters => {
@@ -51,6 +54,7 @@ const placeDetailUrl = (id, filters) => {
 module.exports = {
   async findNearby(filters) {
     try {
+      console.log(filters);
       return await getRests(filters);
     } catch (error) {
       console.log(error);
@@ -71,5 +75,18 @@ module.exports = {
     } catch (error) {
       console.log(error);
     }
+  },
+  async getDetails(placeId, filters) {
+    try {
+      const res = await fetch(placeDetailUrl(placeId, filters));
+      return await res.json();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getBusyHours(placeId) {
+    const data = await busyHours(placeId, GOOGLE_PLACE_API);
+    console.log(data);
+    return data;
   }
 };
