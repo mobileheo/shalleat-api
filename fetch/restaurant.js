@@ -12,7 +12,6 @@ const nearbySearchUrl = filters => {
 
 const getRests = async filters => {
   try {
-    console.log(nearbySearchUrl(filters));
     const res = await fetch(nearbySearchUrl(filters));
     return await res.json();
   } catch (error) {
@@ -70,6 +69,14 @@ module.exports = {
     }
   },
   async getPlaceSchedule(placeId, filters) {
+    try {
+      const res = await fetch(placeDetailUrl(placeId, filters));
+      return await res.json();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getDetails(placeId, filters) {
     try {
       const res = await fetch(placeDetailUrl(placeId, filters));
       return await res.json();
