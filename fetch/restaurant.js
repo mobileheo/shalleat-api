@@ -50,6 +50,34 @@ const placeDetailUrl = (id, filters) => {
   const fields = `fields=${filters.join()}`;
   return `${google_place_url}/details/json?${placeId}&${fields}&key=${GOOGLE_PLACE_API}`;
 };
+const placePhotoUrl = (photoId, maxWidth) => {
+  const photoReference = `photoreference=${photoId}`;
+  const width = `maxwidth=${maxWidth}`;
+  return `${google_place_url}/photo?${width}&${photoReference}&key=${GOOGLE_PLACE_API}`;
+};
+
+const getPhoto = async (photoId, maxWidth) => {
+  try {
+    const { url: photo } = await fetch(placePhotoUrl(photoId, maxWidth));
+    return photo;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// const getPhotos = async (photos, maxWidth, photoUrls = []) => {
+//   try {
+//     if (photos.length === 0) {
+//       return photoUrls;
+//     }
+//     const { photo_reference: photoId } = photos.pop();
+//     const photo = await getPhoto(photoId, maxWidth);
+//     photoUrls.push(photo);
+//     getPhotos(photos, maxWidth, photoUrls);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 module.exports = {
   async findNearby(filters) {
@@ -80,6 +108,27 @@ module.exports = {
     try {
       const res = await fetch(placeDetailUrl(placeId, filters));
       return await res.json();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getPhoto(photoId, maxWidth) {
+    try {
+      const photo = await getPhoto(photoId, maxWidth);
+      return photo;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getPhotos(photos, maxWidth) {
+    if (photos.length === 0) {
+      return photoUrls;
+    }
+    try {
+      const { photo_reference: photoId } = photos.pop();
+      const photo = await getPhoto(photoId, maxWidth);
+      photoUrls.push(photo);
+      await this.getPhotos(photos, maxWidth, photoUrls);
     } catch (error) {
       console.log(error);
     }

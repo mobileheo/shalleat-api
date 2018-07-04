@@ -11,19 +11,17 @@ const environment = process.env.NODE_ENV || "development",
   helmet = require("helmet"),
   app = express();
 
-app.use(compression());
-app.use(helmet());
-
 if (process.env.NODE_ENV !== "test") {
   app.use(logger("dev"));
 }
-
+app.use(compression());
+// app.use(helmet());
+app.use(cors(corsOptionsDelegate));
+app.use(cookieParser());
 app.use(bodyParser.json()).set("json spaces", 2);
 
 const users = require("./routes/api/v1/users");
 const restaurants = require("./routes/api/v1/restaurants");
-app.use(cors(corsOptionsDelegate));
-app.use(cookieParser());
 
 app.use("/api/v1/users", users);
 app.use("/api/v1/restaurants", restaurants);
