@@ -82,7 +82,6 @@ const getPhoto = async (photoId, maxWidth) => {
 module.exports = {
   async findNearby(filters) {
     try {
-      console.log(filters);
       return await getRests(filters);
     } catch (error) {
       console.log(error);
@@ -90,7 +89,6 @@ module.exports = {
   },
   async getNext(pageToken) {
     try {
-      console.log("pageToken => ", pageToken);
       return await getNextRests(pageToken);
     } catch (error) {
       console.log(error);

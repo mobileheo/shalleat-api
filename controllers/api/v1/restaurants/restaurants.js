@@ -113,7 +113,6 @@ module.exports = {
   getPhoto: async (req, res, next) => {
     try {
       const { photoId, maxWidth } = req.body;
-      console.log(photoId);
       const photoUrl = await Restaurant.getPhoto(photoId, maxWidth);
       res.status(200).json({ photoUrl });
     } catch (error) {
@@ -125,7 +124,7 @@ module.exports = {
   //     const { photos, maxWidth } = req.body;
   //     const photoUrls = await Restaurant.getPhotos(photos, maxWidth);
   //     console.log(photoUrls);
-  //     res.status(200).json({ photoUrls });
+  //     res.status(200).jsonGOOGLE_PLACE_API({ photoUrls });
   //   } catch (error) {
   //     console.log(error);
   //   }
