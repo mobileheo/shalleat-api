@@ -4,13 +4,21 @@ Node Web API SSL server that fetches restuarnts data using Google place API and 
 
 ## Demo
 
-> 👇 Fetching FindNearBy restaurant from google place api
+> 👇 Send sign in request to the server.
 
-> <img src="./gifs/pick_me_btn_demo.gif" width="500" height="300" />
+> <img src="./gifs/signin_demo.gif" width="500" height="300" />
 
-> 👇 Fetching restaurant detail from google place api
+> 👇 Send sign up request to the server.
 
-> <img src="./gifs/main_search_box_demo.gif" width="500" height="300" />
+> <img src="./gifs/signup_demo.gif" width="500" height="300" />
+
+> 👇 Send request to get restaurants within 1.5km
+
+> <img src="./gifs/find_nearby_demo.gif" width="500" height="300" />
+
+> 👇 Send request to get restaurant detail
+
+> <img src="./gifs/get_detail_demo.gif" width="500" height="300" />
 
 ## Getting Started
 
