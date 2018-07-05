@@ -81,6 +81,7 @@ module.exports = {
 
         if (todayHours === "Open 24 hours") {
           return res.status(200).json({
+            isOpenNow,
             immortal: "Open 24 hours"
           });
         }
@@ -94,7 +95,7 @@ module.exports = {
         });
       }
       return res.status(200).json({
-        notAvailable: "The business hour for this restaurant is not available."
+        notAvailable: "Not available"
       });
     } catch (error) {
       console.log(error);
@@ -109,6 +110,25 @@ module.exports = {
       console.log(error);
     }
   },
+  getPhoto: async (req, res, next) => {
+    try {
+      const { photoId, maxWidth } = req.body;
+      const photoUrl = await Restaurant.getPhoto(photoId, maxWidth);
+      res.status(200).json({ photoUrl });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  // getPhotos: async (req, res, next) => {
+  //   try {
+  //     const { photos, maxWidth } = req.body;
+  //     const photoUrls = await Restaurant.getPhotos(photos, maxWidth);
+  //     console.log(photoUrls);
+  //     res.status(200).jsonGOOGLE_PLACE_API({ photoUrls });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // },
   getBusyHours: async (req, res, next) => {
     const { placeId } = req.body;
     try {

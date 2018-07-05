@@ -1,0 +1,14 @@
+[req]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = Sunny
+
+[Sunny]
+C=CA
+ST=British Columbia
+L=Vancouver
+O=ShallEat Ltd
+OU=2018
+emailAddress=mobileheo@gmail.com
+CN = localhost

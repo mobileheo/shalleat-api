@@ -1,9 +1,6 @@
 # API keys
 authConfig.js
 
-#SSL encryption 
-encryption/
-__encryption/
 #Test reports
 __tests__/report/
 
