@@ -22,12 +22,12 @@ Node Web API SSL server that fetches restuarnts data using Google place API and 
 
 ## Getting Started
 
-This server needs front end application to render the fetched JSON from google place api
+This server needs front end application to render the fetched JSON from google place api or you can hit the endpoints with postman
 
 ### Prerequisites
 
 1.  You need to install npm or yarn.
-2.  You need to get Google Place API here is link (https://cloud.google.com/maps-platform/)
+2.  You need to get Google Place API. Here is the link (https://cloud.google.com/maps-platform/)
 3.  After you get place api key, then follow next instruction.
 
 ### Installing
