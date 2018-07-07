@@ -89,11 +89,11 @@ You can send a request to the server with postman. It might take a while to get 
 
 1.  User Signup.
 
-- `Post`
+- Post
   ```
   https://shalleatapi.herokuapp.com/api/v1/users/signup
   ```
-- `Body`
+- Body
   ```json
   {
     "email": "your email",
@@ -106,11 +106,11 @@ You can send a request to the server with postman. It might take a while to get 
 
 2.  User Signin.
 
-- `Post`
+- Post
   ```
   https://shalleatapi.herokuapp.com/api/v1/users/signin/
   ```
-- `Body`
+- Body
   ```json
   {
     "email": "your email",
@@ -120,13 +120,13 @@ You can send a request to the server with postman. It might take a while to get 
 
 3.  Find Near By restaurants with given geolocation and radius.
 
-- `Post`
+- Post
 
   ```
   https://shalleatapi.herokuapp.com/api/v1/restaurants/all
   ```
 
-- `Body`
+- Body
   ```json
   {
     "lat": 49.282205100000006,
@@ -137,11 +137,11 @@ You can send a request to the server with postman. It might take a while to get 
 
 4.  Fetch next batch of restaurants with given page token from goolge(next_page_token will be contained in response from goolge if there are more than 20 places in findNearBy request.)
 
-- `Post`
+- Post
   ```
   https://shalleatapi.herokuapp.com/api/v1/restaurants/next
   ```
-- `Body`
+- Body
   ```json
   {
     "pageToken":
@@ -151,13 +151,13 @@ You can send a request to the server with postman. It might take a while to get 
 
 5.  Fetch detail infomration for a restaurant that matches placeId.
 
-- `Post`
+- Post
 
   ```
   https://shalleatapi.herokuapp.com/api/v1/restaurants/detail
   ```
 
-- `Body`
+- Body
   ```json
   {
     "placeId": "ChIJN5hRHoB2hlQRAPQowBSPwLA",
@@ -174,11 +174,11 @@ You can send a request to the server with postman. It might take a while to get 
 
 6.  Fetch schedule for a restaurant that matches placeId. This response will return processed business hours to calculate remaining time until closing or opening businesses in front-end side by parsing original business hours given by Google Place API.
 
-- `Post`
+- Post
   ```
   https://shalleatapi.herokuapp.com/api/v1/restaurants/schedule
   ```
-- `Body`
+- Body
   ```json
   {
     "photoId":
@@ -189,13 +189,13 @@ You can send a request to the server with postman. It might take a while to get 
 
 7.  Fetch photo url
 
-- `Post`
+- Post
 
   ```
   https://shalleatapi.herokuapp.com/api/v1/restaurants/photo
   ```
 
-- `Body`
+- Body
 
   ```json
   {
