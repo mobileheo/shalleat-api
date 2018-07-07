@@ -47,7 +47,7 @@ class Restaurant extends Model {
     return {
       customers: {
         relation: Model.ManyToManyRelation,
-        modelClass: __dirname + "/User",
+        modelClass: __dirname + "/user",
         join: {
           from: "restaurants.id",
           through: {

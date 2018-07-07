@@ -76,7 +76,7 @@ class User extends Model {
     return {
       visitedRestaurants: {
         relation: Model.ManyToManyRelation,
-        modelClass: __dirname + "/Restaurant",
+        modelClass: __dirname + "/restaurant",
         join: {
           from: "users.id",
           through: {

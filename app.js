@@ -8,11 +8,9 @@ const environment = process.env.NODE_ENV || "development",
   cookieParser = require("cookie-parser"),
   { certOptions } = require("./config/authConfig"),
   compression = require("compression"),
-  helmet = require("helmet"),
   app = express();
 
 app.use(compression());
-app.use(helmet());
 
 if (process.env.NODE_ENV !== "test") {
   app.use(logger("dev"));

@@ -68,7 +68,11 @@ module.exports = {
         filters
       );
 
-      const { name, opening_hours: openingHours } = restaruantSchedule.result;
+      const {
+        name = null,
+        opening_hours: openingHours
+      } = restaruantSchedule.result;
+
       if (openingHours) {
         const {
           periods,
