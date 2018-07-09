@@ -35,9 +35,12 @@ const getTodayHours = (periods, weekDays = []) => {
   return n > closedDays.length ? periods[n - closedDays.length] : periods[n];
 };
 
-const getNextDayHours = (todayHours, periods) => {
-  const todayIndex = periods && periods.indexOf(todayHours);
-  const nextDayHours = periods[(todayIndex + 1) % periods.length];
+const nextDaySchedule = ([firstDay, ...restDays], n) =>
+  n < firstDay.open.day ? firstDay : nextDaySchedule(restDays, n);
+
+const getNextDayHours = periods => {
+  const n = date.getDay();
+  const nextDayHours = nextDaySchedule(periods, n);
   return nextDayHours;
 };
 
@@ -81,7 +84,7 @@ module.exports = {
         } = openingHours;
         const isOpenToday = openToday(weekDays);
         const todayHours = getTodayHours(periods, weekDays);
-        const nextDayHours = getNextDayHours(todayHours, periods);
+        const nextDayHours = getNextDayHours(periods);
 
         if (todayHours === "Open 24 hours") {
           return res.status(200).json({
@@ -89,6 +92,7 @@ module.exports = {
             immortal: "Open 24 hours"
           });
         }
+        console.log(name);
         return res.status(200).json({
           name,
           isOpenToday,
