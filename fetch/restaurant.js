@@ -118,7 +118,7 @@ module.exports = {
       console.log(error);
     }
   },
-  async getPhotos(photos, maxWidth) {
+  async getPhotos(photos, maxWidth, photoUrls = []) {
     if (photos.length === 0) {
       return photoUrls;
     }
@@ -126,7 +126,7 @@ module.exports = {
       const { photo_reference: photoId } = photos.pop();
       const photo = await getPhoto(photoId, maxWidth);
       photoUrls.push(photo);
-      await this.getPhotos(photos, maxWidth, photoUrls);
+      return await this.getPhotos(photos, maxWidth, photoUrls);
     } catch (error) {
       console.log(error);
     }

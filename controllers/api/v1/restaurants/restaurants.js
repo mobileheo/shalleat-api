@@ -35,9 +35,12 @@ const getTodayHours = (periods, weekDays = []) => {
   return n > closedDays.length ? periods[n - closedDays.length] : periods[n];
 };
 
-const getNextDayHours = (todayHours, periods) => {
-  const todayIndex = periods && periods.indexOf(todayHours);
-  const nextDayHours = periods[(todayIndex + 1) % periods.length];
+const nextDaySchedule = ([firstDay, ...restDays], n) =>
+  n < firstDay.open.day ? firstDay : nextDaySchedule(restDays, n);
+
+const getNextDayHours = periods => {
+  const n = date.getDay();
+  const nextDayHours = nextDaySchedule(periods, n);
   return nextDayHours;
 };
 
@@ -68,7 +71,11 @@ module.exports = {
         filters
       );
 
-      const { name, opening_hours: openingHours } = restaruantSchedule.result;
+      const {
+        name = null,
+        opening_hours: openingHours
+      } = restaruantSchedule.result;
+
       if (openingHours) {
         const {
           periods,
@@ -77,7 +84,7 @@ module.exports = {
         } = openingHours;
         const isOpenToday = openToday(weekDays);
         const todayHours = getTodayHours(periods, weekDays);
-        const nextDayHours = getNextDayHours(todayHours, periods);
+        const nextDayHours = getNextDayHours(periods);
 
         if (todayHours === "Open 24 hours") {
           return res.status(200).json({
@@ -85,6 +92,7 @@ module.exports = {
             immortal: "Open 24 hours"
           });
         }
+        console.log(name);
         return res.status(200).json({
           name,
           isOpenToday,
@@ -119,16 +127,15 @@ module.exports = {
       console.log(error);
     }
   },
-  // getPhotos: async (req, res, next) => {
-  //   try {
-  //     const { photos, maxWidth } = req.body;
-  //     const photoUrls = await Restaurant.getPhotos(photos, maxWidth);
-  //     console.log(photoUrls);
-  //     res.status(200).jsonGOOGLE_PLACE_API({ photoUrls });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
+  getPhotos: async (req, res, next) => {
+    try {
+      const { photos, maxWidth } = req.body;
+      const photoUrls = await Restaurant.getPhotos(photos, maxWidth);
+      res.status(200).json({ photoUrls });
+    } catch (error) {
+      console.log(error);
+    }
+  },
   getBusyHours: async (req, res, next) => {
     const { placeId } = req.body;
     try {
