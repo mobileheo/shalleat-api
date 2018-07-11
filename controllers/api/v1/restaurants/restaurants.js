@@ -127,16 +127,15 @@ module.exports = {
       console.log(error);
     }
   },
-  // getPhotos: async (req, res, next) => {
-  //   try {
-  //     const { photos, maxWidth } = req.body;
-  //     const photoUrls = await Restaurant.getPhotos(photos, maxWidth);
-  //     console.log(photoUrls);
-  //     res.status(200).jsonGOOGLE_PLACE_API({ photoUrls });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
+  getPhotos: async (req, res, next) => {
+    try {
+      const { photos, maxWidth } = req.body;
+      const photoUrls = await Restaurant.getPhotos(photos, maxWidth);
+      res.status(200).json({ photoUrls });
+    } catch (error) {
+      console.log(error);
+    }
+  },
   getBusyHours: async (req, res, next) => {
     const { placeId } = req.body;
     try {

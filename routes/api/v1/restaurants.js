@@ -20,7 +20,7 @@ router.route("/next").post(passportJWT, getNextRests);
 router.route("/schedule").post(passportJWT, getRestaurantSchedule);
 router.route("/detail").post(passportJWT, getDetail);
 router.route("/photo").post(passportJWT, getPhoto);
-// router.route("/photos").post(passportJWT, getPhotos);
+router.route("/photos").post(passportJWT, getPhotos);
 router.route("/busyhours").post(passportJWT, getBusyHours);
 
 module.exports = router;
