@@ -13,7 +13,7 @@ const createToken = user =>
   );
 const maxAge = 1000 * 60 * 60;
 const httpOnly = true;
-// const secure = true;
+const secure = true;
 
 module.exports = {
   signUp: async (req, res, next) => {
@@ -29,7 +29,7 @@ module.exports = {
       const token = await createToken(user);
       const { password, ...currentUser } = user;
 
-      res.cookie("ShallEat", token, { maxAge, httpOnly });
+      res.cookie("ShallEat", token, { maxAge, secure, httpOnly });
       res.status(200).json(currentUser);
     } catch (error) {
       res.status(404).json(error);
@@ -40,15 +40,20 @@ module.exports = {
       const { user } = req;
       const token = createToken(user);
       const { password, ...currentUser } = user;
-      res.cookie("ShallEat", token, { maxAge, httpOnly });
-      res.status(200).json(currentUser);
+      res.cookie("ShallEat", token, {
+        maxAge,
+        secure,
+        httpOnly
+      });
+
+      res.status(200).json({ currentUser, token });
     } catch (error) {
       res.status(404).json(error);
     }
   },
   signOut: async (req, res, next) => {
     try {
-      res.cookie("ShallEat", { token: null }, { maxAge: 0, httpOnly });
+      res.cookie("ShallEat", { token: null }, { maxAge: 0, secure, httpOnly });
       res.status(200).json({ message: "You are successfully signed out :)" });
     } catch (error) {
       res.status(404).json(error);
@@ -57,7 +62,6 @@ module.exports = {
   currentUser: async (req, res, next) => {
     try {
       const { user } = req;
-      console.log(user);
       const { password, ...currentUser } = user;
       user ? res.status(200).json(currentUser) : res.status(404);
     } catch (error) {

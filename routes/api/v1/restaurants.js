@@ -8,6 +8,7 @@ const {
   getNextRests,
   getRestaurantSchedule,
   getDetail,
+  getDetails,
   getPhoto,
   getPhotos,
   getBusyHours
@@ -15,10 +16,12 @@ const {
 
 const passportJWT = passport.authenticate("jwt", { session: false });
 
-router.route("/all").post(passportJWT, findAllRestaurants);
+// router.route("/all").post(passportJWT, findAllRestaurants);
+router.route("/all").post(findAllRestaurants);
 router.route("/next").post(passportJWT, getNextRests);
-router.route("/schedule").post(passportJWT, getRestaurantSchedule);
+// router.route("/schedule").post(passportJWT, getRestaurantSchedule);
 router.route("/detail").post(passportJWT, getDetail);
+router.route("/details").post(passportJWT, getDetails);
 router.route("/photo").post(passportJWT, getPhoto);
 router.route("/photos").post(passportJWT, getPhotos);
 router.route("/busyhours").post(passportJWT, getBusyHours);

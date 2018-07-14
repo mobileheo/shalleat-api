@@ -36,7 +36,7 @@ const getTodayHours = (periods, weekDays = []) => {
 };
 
 const nextDaySchedule = ([firstDay, ...restDays], n) =>
-  n < firstDay.open.day ? firstDay : nextDaySchedule(restDays, n);
+  n < firstDay.open.day || n === 6 ? firstDay : nextDaySchedule(restDays, n);
 
 const getNextDayHours = periods => {
   const n = date.getDay();
@@ -63,18 +63,61 @@ module.exports = {
       console.log(error);
     }
   },
-  getRestaurantSchedule: async (req, res, next) => {
+  // getRestaurantSchedule: async (req, res, next) => {
+  //   try {
+  //     const { placeId, filters } = req.body;
+  //     const restaruantSchedule = await Restaurant.getDetails(
+  //       placeId,
+  //       filters
+  //     );
+
+  //     const {
+  //       name = null,
+  //       opening_hours: openingHours
+  //     } = restaruantSchedule.result;
+
+  //     if (openingHours) {
+  //       const {
+  //         periods,
+  //         weekday_text: weekDays,
+  //         open_now: isOpenNow
+  //       } = openingHours;
+  //       const isOpenToday = openToday(weekDays);
+  //       const todayHours = getTodayHours(periods, weekDays);
+  //       const nextDayHours = getNextDayHours(periods);
+
+  //       if (todayHours === "Open 24 hours") {
+  //         return res.status(200).json({
+  //           isOpenNow,
+  //           immortal: "Open 24 hours"
+  //         });
+  //       }
+  //       console.log(name);
+  //       return res.status(200).json({
+  //         name,
+  //         isOpenToday,
+  //         isOpenNow,
+  //         todayHours,
+  //         nextDayHours,
+  //         weekDays
+  //       });
+  //     }
+  //     return res.status(200).json({
+  //       notAvailable: "Not available"
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // },
+  getDetails: async (req, res, next) => {
     try {
       const { placeId, filters } = req.body;
-      const restaruantSchedule = await Restaurant.getPlaceSchedule(
-        placeId,
-        filters
-      );
+      const restaruantDetails = await Restaurant.getDetails(placeId, filters);
 
       const {
-        name = null,
-        opening_hours: openingHours
-      } = restaruantSchedule.result;
+        opening_hours: openingHours,
+        ...details
+      } = restaruantDetails.result;
 
       if (openingHours) {
         const {
@@ -82,28 +125,34 @@ module.exports = {
           weekday_text: weekDays,
           open_now: isOpenNow
         } = openingHours;
-        const isOpenToday = openToday(weekDays);
+
         const todayHours = getTodayHours(periods, weekDays);
-        const nextDayHours = getNextDayHours(periods);
 
         if (todayHours === "Open 24 hours") {
           return res.status(200).json({
-            isOpenNow,
-            immortal: "Open 24 hours"
+            schedule: { isOpenNow, immortal: "Open 24 hours" },
+            details
           });
         }
-        console.log(name);
+
+        const isOpenToday = openToday(weekDays);
+        const nextDayHours = getNextDayHours(periods);
+
         return res.status(200).json({
-          name,
-          isOpenToday,
-          isOpenNow,
-          todayHours,
-          nextDayHours,
-          weekDays
+          schedule: {
+            isOpenToday,
+            isOpenNow,
+            todayHours,
+            nextDayHours,
+            weekDays
+          },
+          details
         });
       }
+
       return res.status(200).json({
-        notAvailable: "Not available"
+        schedule: { notAvailable: "Not available" },
+        details
       });
     } catch (error) {
       console.log(error);
@@ -112,7 +161,7 @@ module.exports = {
   getDetail: async (req, res, next) => {
     try {
       const { placeId, filters } = req.body;
-      const { result } = await Restaurant.getPlaceSchedule(placeId, filters);
+      const { result } = await Restaurant.getDetails(placeId, filters);
       res.status(200).json(result);
     } catch (error) {
       console.log(error);

@@ -46,6 +46,7 @@ const getNextRests = async pageToken => {
   }
 };
 const placeDetailUrl = (id, filters) => {
+  console.log(filters);
   const placeId = `placeid=${id}`;
   const fields = `fields=${filters.join()}`;
   return `${google_place_url}/details/json?${placeId}&${fields}&key=${GOOGLE_PLACE_API}`;
@@ -94,14 +95,14 @@ module.exports = {
       console.log(error);
     }
   },
-  async getPlaceSchedule(placeId, filters) {
-    try {
-      const res = await fetch(placeDetailUrl(placeId, filters));
-      return await res.json();
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  // async getPlaceSchedule(placeId, filters) {
+  //   try {
+  //     const res = await fetch(placeDetailUrl(placeId, filters));
+  //     return await res.json();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // },
   async getDetails(placeId, filters) {
     try {
       const res = await fetch(placeDetailUrl(placeId, filters));
