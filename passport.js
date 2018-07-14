@@ -7,6 +7,7 @@ const { User } = require("./models/schema");
 
 const cookieExtractor = req => {
   let token = null;
+  console.log(req.cookies);
   if (req && req.cookies) token = req.cookies["ShallEat"];
   return token;
 };
