@@ -11,8 +11,6 @@ const environment = process.env.NODE_ENV || "development",
   compression = require("compression"),
   app = express();
 
-app.use(compression());
-
 if (process.env.NODE_ENV !== "test") {
   app.use(logger("dev"));
 }

@@ -46,7 +46,7 @@ const getNextRests = async pageToken => {
   }
 };
 const placeDetailUrl = (id, filters) => {
-  console.log(filters);
+  // console.log(filters);
   const placeId = `placeid=${id}`;
   const fields = `fields=${filters.join()}`;
   return `${google_place_url}/details/json?${placeId}&${fields}&key=${GOOGLE_PLACE_API}`;
