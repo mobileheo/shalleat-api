@@ -28,7 +28,7 @@ const getTodayHours = (periods, weekDays = [], day) => {
   if (openTwentyFour(weekDays, day)) return "Open 24 hours";
 
   return day > closedDays.length
-    ? periods[n - closedDays.length]
+    ? periods[day - closedDays.length]
     : periods[day];
 };
 
