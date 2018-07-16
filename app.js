@@ -11,9 +11,6 @@ const environment = process.env.NODE_ENV || "development",
   compression = require("compression"),
   app = express();
 
-app.use(compression());
-// app.use(helmet());
-
 if (process.env.NODE_ENV !== "test") {
   app.use(logger("dev"));
 }
@@ -26,8 +23,6 @@ app.use(bodyParser.json()).set("json spaces", 2);
 const users = require("./routes/api/v1/users");
 const restaurants = require("./routes/api/v1/restaurants");
 
-// app.use("/", proxy("https://shalleat.com"));
-// app.use("/api/v1/users", proxy("https://shalleat.com/api/v1/users", users));
 app.use("/api/v1/users", users);
 app.use("/api/v1/restaurants", restaurants);
 

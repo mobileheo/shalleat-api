@@ -1,16 +1,13 @@
 const Restaurant = require("../../../../fetch/restaurant");
-const date = new Date();
 
-const openToday = weekDays => {
-  const date = new Date();
-  const n = date.getDay() + 6;
+const openToday = (weekDays, day) => {
+  const n = day + 6;
   const todayHours = weekDays[n % 7];
   return !todayHours.includes("Closed");
 };
 
-const openTwentyFour = weekDays => {
-  const date = new Date();
-  const n = date.getDay() + 6;
+const openTwentyFour = (weekDays, day) => {
+  const n = day + 6;
   const todayHours = weekDays[n % 7];
   return todayHours.includes("Open 24 hours");
 };
@@ -24,23 +21,24 @@ const getClosedDay = weekDays => {
   return closedDays;
 };
 
-const getTodayHours = (periods, weekDays = []) => {
-  const date = new Date();
-  const n = date.getDay();
+const getTodayHours = (periods, weekDays = [], day) => {
   const closedDays = getClosedDay(weekDays);
 
-  if (!openToday(weekDays)) return "Closed";
-  if (openTwentyFour(weekDays)) return "Open 24 hours";
+  if (!openToday(weekDays, day)) return "Closed";
+  if (openTwentyFour(weekDays, day)) return "Open 24 hours";
 
-  return n > closedDays.length ? periods[n - closedDays.length] : periods[n];
+  return day > closedDays.length
+    ? periods[n - closedDays.length]
+    : periods[day];
 };
 
-const nextDaySchedule = ([firstDay, ...restDays], n) =>
-  n < firstDay.open.day || n === 6 ? firstDay : nextDaySchedule(restDays, n);
+const nextDaySchedule = ([firstDay, ...restDays], day) =>
+  day < firstDay.open.day || day === 6
+    ? firstDay
+    : nextDaySchedule(restDays, day);
 
-const getNextDayHours = periods => {
-  const n = date.getDay();
-  const nextDayHours = nextDaySchedule(periods, n);
+const getNextDayHours = (periods, day) => {
+  const nextDayHours = nextDaySchedule(periods, day);
   return nextDayHours;
 };
 
@@ -63,57 +61,11 @@ module.exports = {
       console.log(error);
     }
   },
-  // getRestaurantSchedule: async (req, res, next) => {
-  //   try {
-  //     const { placeId, filters } = req.body;
-  //     const restaruantSchedule = await Restaurant.getDetails(
-  //       placeId,
-  //       filters
-  //     );
 
-  //     const {
-  //       name = null,
-  //       opening_hours: openingHours
-  //     } = restaruantSchedule.result;
-
-  //     if (openingHours) {
-  //       const {
-  //         periods,
-  //         weekday_text: weekDays,
-  //         open_now: isOpenNow
-  //       } = openingHours;
-  //       const isOpenToday = openToday(weekDays);
-  //       const todayHours = getTodayHours(periods, weekDays);
-  //       const nextDayHours = getNextDayHours(periods);
-
-  //       if (todayHours === "Open 24 hours") {
-  //         return res.status(200).json({
-  //           isOpenNow,
-  //           immortal: "Open 24 hours"
-  //         });
-  //       }
-  //       console.log(name);
-  //       return res.status(200).json({
-  //         name,
-  //         isOpenToday,
-  //         isOpenNow,
-  //         todayHours,
-  //         nextDayHours,
-  //         weekDays
-  //       });
-  //     }
-  //     return res.status(200).json({
-  //       notAvailable: "Not available"
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
   getDetails: async (req, res, next) => {
     try {
-      const { placeId, filters } = req.body;
+      const { placeId, filters, day } = req.body;
       const restaruantDetails = await Restaurant.getDetails(placeId, filters);
-
       const {
         opening_hours: openingHours,
         ...details
@@ -126,7 +78,7 @@ module.exports = {
           open_now: isOpenNow
         } = openingHours;
 
-        const todayHours = getTodayHours(periods, weekDays);
+        const todayHours = getTodayHours(periods, weekDays, day);
 
         if (todayHours === "Open 24 hours") {
           return res.status(200).json({
@@ -135,8 +87,8 @@ module.exports = {
           });
         }
 
-        const isOpenToday = openToday(weekDays);
-        const nextDayHours = getNextDayHours(periods);
+        const isOpenToday = openToday(weekDays, day);
+        const nextDayHours = getNextDayHours(periods, day);
 
         return res.status(200).json({
           schedule: {
