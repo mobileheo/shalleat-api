@@ -91,7 +91,8 @@ You can send a request to the server with postman. It might take a while to get 
 
 - Post
   ```
-  https://shalleatapi.herokuapp.com/api/v1/users/signup
+  https://shalleatapi.herokuapp.com/api/v1/users/signup (Heroku)
+  https://api.shalleat.com/api/v1/users/signup (AWS EC2)
   ```
 - Body
   ```json
@@ -108,7 +109,8 @@ You can send a request to the server with postman. It might take a while to get 
 
 - Post
   ```
-  https://shalleatapi.herokuapp.com/api/v1/users/signin/
+  https://shalleatapi.herokuapp.com/api/v1/users/signin/ (Heroku)
+  https://api.shalleat.com/api/v1/users/signin (AWS EC2)
   ```
 - Body
   ```json
@@ -123,7 +125,8 @@ You can send a request to the server with postman. It might take a while to get 
 - Post
 
   ```
-  https://shalleatapi.herokuapp.com/api/v1/restaurants/all
+  https://shalleatapi.herokuapp.com/api/v1/restaurants/all (Heroku)
+  https://api.shalleat.com/api/v1/restaurants/all (AWS EC2)
   ```
 
 - Body
@@ -139,7 +142,8 @@ You can send a request to the server with postman. It might take a while to get 
 
 - Post
   ```
-  https://shalleatapi.herokuapp.com/api/v1/restaurants/next
+  https://shalleatapi.herokuapp.com/api/v1/restaurants/next (Heroku)
+  https://api.shalleat.com/api/v1/restaurants/next (AWS EC2)
   ```
 - Body
   ```json
@@ -154,7 +158,8 @@ You can send a request to the server with postman. It might take a while to get 
 - Post
 
   ```
-  https://shalleatapi.herokuapp.com/api/v1/restaurants/detail
+  https://shalleatapi.herokuapp.com/api/v1/restaurants/detail (Heroku)
+  https://api.shalleat.com/api/v1/restaurants/detail (AWS EC2)
   ```
 
 - Body
@@ -176,7 +181,8 @@ You can send a request to the server with postman. It might take a while to get 
 
 - Post
   ```
-  https://shalleatapi.herokuapp.com/api/v1/restaurants/schedule
+  https://shalleatapi.herokuapp.com/api/v1/restaurants/schedule (Heroku)
+  https://api.shalleat.com/api/v1/restaurants/schedule (AWS EC2)
   ```
 - Body
   ```json
@@ -192,7 +198,8 @@ You can send a request to the server with postman. It might take a while to get 
 - Post
 
   ```
-  https://shalleatapi.herokuapp.com/api/v1/restaurants/photo
+  https://shalleatapi.herokuapp.com/api/v1/restaurants/photo (Heroku)
+  https://api.shalleat.com/api/v1/restaurants/photo (AWS EC2)
   ```
 
 - Body
